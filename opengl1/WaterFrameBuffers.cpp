@@ -2,9 +2,9 @@
 
 
 const int WaterFrameBuffers::REFLECTION_WIDTH = 320;
-const int WaterFrameBuffers::REFLECTION_HEIGHT = 180;
+const int WaterFrameBuffers::_REFLECTION_HEIGHT = 180;
 const int WaterFrameBuffers::REFRACTION_WIDTH = 1280;
-const int WaterFrameBuffers::REFRACTION_HEIGHT = 720;
+const int WaterFrameBuffers::_REFRACTION_HEIGHT = 720;
 
 WaterFrameBuffers::WaterFrameBuffers()
 {
@@ -29,12 +29,12 @@ void WaterFrameBuffers::cleanUp()
 
 void WaterFrameBuffers::bindReflectionFrameBuffer()
 {
-	bindFrameBuffer(_reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
+	bindFrameBuffer(_reflectionFrameBuffer, REFLECTION_WIDTH, _REFLECTION_HEIGHT);
 }
 
 void WaterFrameBuffers::bindRefractionFrameBuffer()
 {
-	bindFrameBuffer(_refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
+	bindFrameBuffer(_refractionFrameBuffer, REFRACTION_WIDTH, _REFRACTION_HEIGHT);
 }
 
 void WaterFrameBuffers::unbindCurrentFrameBuffer()
@@ -43,17 +43,17 @@ void WaterFrameBuffers::unbindCurrentFrameBuffer()
 	glViewport(0, 0, DisplayManager::getWIDTH(), DisplayManager::getHEIGHT());
 }
 
-int WaterFrameBuffers::getReflectionTexture()
+int WaterFrameBuffers::getReflectionTexture() const
 {
 	return _reflectionTexture;
 }
 
-int WaterFrameBuffers::getRefractionTexture()
+int WaterFrameBuffers::getRefractionTexture() const
 {
 	return _refractionTexture;
 }
 
-int WaterFrameBuffers::getRefractionDepthTexture()
+int WaterFrameBuffers::getRefractionDepthTexture() const
 {
 	return _refractionDepthTexture;
 }
@@ -61,16 +61,16 @@ int WaterFrameBuffers::getRefractionDepthTexture()
 void WaterFrameBuffers::initialiseReflectionFrameBuffer()
 {
 	_reflectionFrameBuffer = createFrameBuffer();
-	_reflectionTexture = createTextureAttachment(REFLECTION_WIDTH, REFLECTION_HEIGHT);
-	_reflectionDepthBuffer = createDepthBufferAttachment(REFLECTION_WIDTH, REFLECTION_HEIGHT);
+	_reflectionTexture = createTextureAttachment(REFLECTION_WIDTH, _REFLECTION_HEIGHT);
+	_reflectionDepthBuffer = createDepthBufferAttachment(REFLECTION_WIDTH, _REFLECTION_HEIGHT);
 	unbindCurrentFrameBuffer();
 }
 
 void WaterFrameBuffers::initialiseRefractionFrameBuffer()
 {
 	_refractionFrameBuffer = createFrameBuffer();
-	_refractionTexture = createTextureAttachment(REFRACTION_WIDTH, REFRACTION_HEIGHT);
-	_refractionDepthTexture = createDepthTextureAttachment(REFRACTION_WIDTH, REFRACTION_HEIGHT);
+	_refractionTexture = createTextureAttachment(REFRACTION_WIDTH, _REFRACTION_HEIGHT);
+	_refractionDepthTexture = createDepthTextureAttachment(REFRACTION_WIDTH, _REFRACTION_HEIGHT);
 	unbindCurrentFrameBuffer();
 }
 

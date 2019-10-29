@@ -7,14 +7,14 @@
 class Camera
 {
 public:
-	Camera();
-	Camera(float p_pitch, float p_yaw, float p_roll);
+	explicit Camera() : Camera(0.0f, 0.0f, 0.0f) {};
+	explicit Camera(float p_pitch, float p_yaw, float p_roll) : _pitch(p_pitch), _yaw(p_yaw), _roll(p_roll) {};
 	~Camera();
 
-	glm::vec3 getPosition();
-	float getPitch();
-	float getYaw();
-	float getRoll();
+	glm::vec3 getPosition() const;
+	float getPitch() const;
+	float getYaw() const;
+	float getRoll() const;
 	void setPosition(glm::vec3 p_position);
 
 	void invertPitch();

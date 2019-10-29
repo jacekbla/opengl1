@@ -6,17 +6,17 @@ ModelTexture::~ModelTexture()
 {
 }
 
-int ModelTexture::getTextureID()
+int ModelTexture::getTextureID() const
 {
 	return _textureID;
 }
 
-float &ModelTexture::getShineDamper()
+float ModelTexture::getShineDamper() const
 {
 	return _shineDamper;
 }
 
-float &ModelTexture::getReflectivity()
+float ModelTexture::getReflectivity() const
 {
 	return _reflectivity;
 }

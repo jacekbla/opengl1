@@ -4,12 +4,12 @@ RawModel::~RawModel()
 {
 }
 
-int RawModel::getVaoID()
+int RawModel::getVaoID() const
 {
-	return _vao_id;
+	return _vaoId;
 }
 
-int RawModel::getVertexCount()
+int RawModel::getVertexCount() const
 {
-	return _vertex_count;
+	return _vertexCount;
 }

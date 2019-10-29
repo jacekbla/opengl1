@@ -1,28 +1,28 @@
 #include "glFuncs.h"
 #include "DisplayManager.h"
 
-#ifndef WATERFRAMEBUFFERS_H
-#define WATERFRAMEBUFFERS_H
+#ifndef WATER_FRAME_BUFFERS_H
+#define WATER_FRAME_BUFFERS_H
 
 
 class WaterFrameBuffers
 {
 public:
-	WaterFrameBuffers();
+	explicit WaterFrameBuffers();
 	~WaterFrameBuffers();
 
 	void cleanUp();
 	void bindReflectionFrameBuffer();
 	void bindRefractionFrameBuffer();
 	void unbindCurrentFrameBuffer();
-	int getReflectionTexture();
-	int getRefractionTexture();
-	int getRefractionDepthTexture();
+	int getReflectionTexture() const;
+	int getRefractionTexture() const;
+	int getRefractionDepthTexture() const;
 
 
 private:
-	static const int REFLECTION_HEIGHT;
-	static const int REFRACTION_HEIGHT;
+	static const int _REFLECTION_HEIGHT;
+	static const int _REFRACTION_HEIGHT;
 
 	GLuint _reflectionFrameBuffer;
 	GLuint _reflectionTexture;
@@ -46,4 +46,4 @@ protected:
 };
 
 
-#endif WATERFRAMEBUFFERS_H
+#endif WATER_FRAME_BUFFERS_H

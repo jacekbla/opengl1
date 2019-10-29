@@ -1,26 +1,29 @@
 #include "Utility.h"
 
-#ifndef MODELTEXTURE_H
-#define MODELTEXTURE_H
+#ifndef MODEL_TEXTURE_H
+#define MODEL_TEXTURE_H
 
 class ModelTexture
 {
 public:
-	ModelTexture() : ModelTexture(-1) {};
-	ModelTexture(int id) : _textureID(id) {};
+	explicit ModelTexture() : ModelTexture(-1) 
+	{
+		_shineDamper = 1.0f;
+		_reflectivity = 0.0f;
+	};
+	explicit ModelTexture(int p_id) : _textureID(p_id) {};
 	~ModelTexture();
 
-	int getTextureID();
-
-	float &getShineDamper();
-	float &getReflectivity();
+	int getTextureID() const;
+	float getShineDamper() const;
+	float getReflectivity() const;
 	void setShineDamper(float p_shineDamper);
 	void setReflectivity(float p_reflectivity);
 
 private:
 	int _textureID;
-	float _shineDamper = 1.0f;
-	float _reflectivity = 0.0f;
+	float _shineDamper;
+	float _reflectivity;
 };
 
-#endif MODELTEXTURE_H
+#endif MODEL_TEXTURE_H

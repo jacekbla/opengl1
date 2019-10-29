@@ -4,17 +4,17 @@
 class RawModel
 {
 public:
-	RawModel(int p_vao_id, int p_vertex_count)
-		: _vao_id(p_vao_id),
-		_vertex_count(p_vertex_count) {};
-	RawModel() : RawModel(0, 0) {};
+	explicit RawModel(int p_vaoId, int p_vertexCount)
+		: _vaoId(p_vaoId),
+		_vertexCount(p_vertexCount) {};
+	explicit RawModel() : RawModel(0, 0) {};
 	~RawModel();
-	int getVaoID();
-	int getVertexCount();
+	int getVaoID() const;
+	int getVertexCount() const;
 
 private:
-	int _vao_id;
-	int _vertex_count;
+	int _vaoId;
+	int _vertexCount;
 };
 
 #endif RAW_MODEL_H

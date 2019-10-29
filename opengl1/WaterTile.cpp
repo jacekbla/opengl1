@@ -2,29 +2,21 @@
 
 const float WaterTile::TILE_SIZE = 5.0f;
 
-WaterTile::WaterTile(float p_centerX, float p_centerZ, float p_height)
-{
-	_x = p_centerX;
-	_z = p_centerZ;
-	_height = p_height;
-}
-
-
 WaterTile::~WaterTile()
 {
 }
 
-float WaterTile::_getHeight()
+float WaterTile::getHeight() const
 {
 	return _height;
 }
 
-float WaterTile::_getX()
+float WaterTile::getX() const
 {
 	return _x;
 }
 
-float WaterTile::_getZ()
+float WaterTile::getZ() const
 {
 	return _z;
 }

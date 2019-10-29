@@ -1,8 +1,10 @@
 #include "DisplayManager.h"
 
-DisplayManager::DisplayManager(int argc, char **argv)
+const char* DisplayManager::_TITLE = "openGL";
+
+DisplayManager::DisplayManager(int p_argc, char **p_argv)
 {
-	glutInit(&argc, argv);
+	glutInit(&p_argc, p_argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 }
 
@@ -18,11 +20,9 @@ DisplayManager::~DisplayManager()
 
 void DisplayManager::createDisplay()
 {
-	const char* TITLE = "openGL";
-
-	glutInitWindowSize(WIDTH, HEIGHT);
-	glutCreateWindow(TITLE);
-	glViewport(0, 0, WIDTH, HEIGHT);
+	glutInitWindowSize(_WIDTH, _HEIGHT);
+	glutCreateWindow(_TITLE);
+	glViewport(0, 0, _WIDTH, _HEIGHT);
 }
 
 void DisplayManager::updateDisplay()

@@ -5,17 +5,17 @@ TexturedModel::~TexturedModel()
 {
 }
 
-RawModel TexturedModel::getRawModel()
+RawModel TexturedModel::getRawModel() const
 {
 	return _rawModel;
 }
 
-ModelTexture &TexturedModel::getTexture()
+ModelTexture TexturedModel::getTexture() const
 {
 	return _texture;
 }
 
 bool TexturedModel::operator<(const TexturedModel& p_other) const
 {
-	return this < &p_other;//_texture.getTextureID() < p_other.getTexture().getTextureID();
+	return this < &p_other;
 }

@@ -1,12 +1,12 @@
 #include "Utility.h"
 
-#ifndef SHADERPROGRAM_H
-#define SHADERPROGRAM_H
+#ifndef SHADER_PROGRAM_H
+#define SHADER_PROGRAM_H
 
 class ShaderProgram
 {
 public:
-	ShaderProgram(const char* vertexFile, const char* fragmentFile);
+	explicit ShaderProgram(const char* p_vertexFile, const char* p_fragmentFile);
 	~ShaderProgram();
 
 	virtual void start();
@@ -14,25 +14,25 @@ public:
 	virtual void cleanUp();
 
 private:
-	int programHandle;
-	int vertexShaderHandle;
-	int fragmentShaderHandle;
+	int _programHandle;
+	int _vertexShaderHandle;
+	int _fragmentShaderHandle;
 
-	char* readShader(const char * aShaderFile);
-	void setShaders(const char* p_vertex, const char* p_pixel, int &programHandle, int &vertexShaderHandle, int &fragmentShaderHandle);
-	void setShader(const char* p_file, int &programHandle, int &shaderHandle);
+	char* readShader(const char * p_shaderFile);
+	void setShaders(const char* p_vertex, const char* p_pixel, int &p_programHandle, int &p_vertexShaderHandle, int &p_fragmentShaderHandle);
+	void setShader(const char* p_file, int &p_programHandle, int &p_shaderHandle);
 
 protected:
 	virtual void bindAttributes();
-	virtual void bindAttribute(int attribute, const char* variableName);
+	virtual void bindAttribute(int p_attribute, const char* p_variableName);
 	virtual void getAllUniformLocations();
 	int getUniformLocation(const char* p_uniformName);
 	void loadInt(int p_location, int p_value);
-	void loadFloat(int p_location, float &p_value);
+	void loadFloat(int p_location, float p_value);
 	void loadVector(int p_location, glm::vec3 &p_value);
 	void loadVector(int p_location, glm::vec4 &p_value);
-	void loadBoolean(int p_location, bool &value);
+	void loadBoolean(int p_location, bool p_value);
 	void loadMatrix(int p_location, glm::mat4 &p_matrix);
 };
 
-#endif SHADERPROGRAM_H
+#endif SHADER_PROGRAM_H

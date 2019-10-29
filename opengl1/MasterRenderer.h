@@ -7,13 +7,13 @@
 #include "Camera.h"
 #include <map>
 
-#ifndef MASTERRENDERER_H
-#define MASTERRENDERER_H
+#ifndef MASTER_RENDERER_H
+#define MASTER_RENDERER_H
 
 class MasterRenderer
 {
 public:
-	MasterRenderer();
+	explicit MasterRenderer();
 	~MasterRenderer();
 
 	void cleanUp();
@@ -24,10 +24,10 @@ public:
 
 private:
 	StaticShader _shader;
-	Renderer _renderer = Renderer(_shader);
+	Renderer *_renderer;
 
 	std::map<TexturedModel, std::vector<Entity>> _entities;
 };
 
 
-#endif MASTERRENDERER_H
+#endif MASTER_RENDERER_H

@@ -2,38 +2,26 @@
 
 
 
-Camera::Camera()
-{
-}
-
-Camera::Camera(float p_pitch, float p_yaw, float p_roll)
-{
-	_pitch = p_pitch;
-	_yaw = p_yaw;
-	_roll = p_roll;
-}
-
-
 Camera::~Camera()
 {
 }
 
-glm::vec3 Camera::getPosition()
+glm::vec3 Camera::getPosition() const
 {
 	return _position;
 }
 
-float Camera::getPitch()
+float Camera::getPitch() const
 {
 	return _pitch;
 }
 
-float Camera::getYaw()
+float Camera::getYaw() const
 {
 	return _yaw;
 }
 
-float Camera::getRoll()
+float Camera::getRoll() const
 {
 	return _roll;
 }

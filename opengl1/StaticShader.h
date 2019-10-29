@@ -3,16 +3,16 @@
 #include "Maths.h"
 #include "Light.h"
 
-#ifndef STATICSHADER_H
-#define STATICSHADER_H
+#ifndef STATIC_SHADER_H
+#define STATIC_SHADER_H
 
 class StaticShader : public ShaderProgram
 {
 public:
-	StaticShader() : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) 
+	explicit StaticShader() : ShaderProgram(_VERTEX_FILE, _FRAGMENT_FILE) 
 	{
 		getAllUniformLocations();
-		//bindAttributes();
+		bindAttributes();
 	};
 	~StaticShader();
 
@@ -23,23 +23,23 @@ public:
 	void loadProjectionMatrix(glm::mat4 &p_matrix);
 	void loadViewMatrix(Camera &p_camera);
 	void loadLight(Light &p_light);
-	void loadShineVariables(float &p_damper, float &p_reflectivity);
-	void loadClipPlane(glm::fvec4 plane);
+	void loadShineVariables(float p_damper, float p_reflectivity);
+	void loadClipPlane(glm::fvec4 p_plane);
 
 	void loadMVP(glm::mat4 &p_matrix);
 
 private:
-	static const char* VERTEX_FILE;
-	static const char* FRAGMENT_FILE;
-	int location_MVP;
-	int location_transformMatrix;
-	int location_projectionMatrix;
-	int location_viewMatrix;
-	int location_lightPosition;
-	int location_lightColor;
-	int location_shineDamper;
-	int location_reflectivity;
-	int location_plane;
+	static const char* _VERTEX_FILE;
+	static const char* _FRAGMENT_FILE;
+	int _location_MVP;
+	int _location_transformMatrix;
+	int _location_projectionMatrix;
+	int _location_viewMatrix;
+	int _location_lightPosition;
+	int _location_lightColor;
+	int _location_shineDamper;
+	int _location_reflectivity;
+	int _location_plane;
 };
 
-#endif STATICSHADER_H
+#endif STATIC_SHADER_H

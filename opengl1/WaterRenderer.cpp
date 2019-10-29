@@ -21,7 +21,7 @@ void WaterRenderer::render(std::vector<WaterTile> p_water, Camera & p_camera)
 {
 	prepare(p_camera);
 	for (WaterTile tile : p_water) {
-		glm::mat4 modelMatrix = Maths::createTransformMatrix(glm::fvec3(tile._getX(), tile._getHeight(), tile._getZ()), 0.0f, 0.0f, 0.0f, WaterTile::TILE_SIZE);
+		glm::mat4 modelMatrix = Maths::createTransformMatrix(glm::fvec3(tile.getX(), tile.getHeight(), tile.getZ()), 0.0f, 0.0f, 0.0f, WaterTile::TILE_SIZE);
 		_shader.loadModelMatrix(modelMatrix);
 
 		glDrawArrays(GL_TRIANGLES, 0, _quad.getVertexCount());

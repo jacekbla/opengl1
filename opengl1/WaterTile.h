@@ -1,17 +1,18 @@
-#ifndef WATERTILE_H
-#define WATERTILE_H
+#ifndef WATER_TILE_H
+#define WATER_TILE_H
 
 class WaterTile
 {
 public:
-	static const float TILE_SIZE;
-
-	WaterTile(float p_centerX, float p_centerZ, float p_height);
+	explicit WaterTile() : WaterTile(0.0f, 0.0f, 0.0f) {};
+	explicit WaterTile(float p_centerX, float p_centerZ, float p_height) : _height(p_height), _x(p_centerX), _z(p_centerZ) {};
 	~WaterTile();
 
-	float _getHeight();
-	float _getX();
-	float _getZ();
+	static const float TILE_SIZE;
+
+	float getHeight() const;
+	float getX() const;
+	float getZ() const;
 
 private:
 	float _height;
@@ -19,5 +20,4 @@ private:
 	float _z;
 };
 
-
-#endif WATERTILE_H
+#endif WATER_TILE_H

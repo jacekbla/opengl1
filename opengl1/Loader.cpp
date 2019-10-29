@@ -52,9 +52,6 @@ BitMapFile* getBMPData(std::string filename)
 
 
 
-
-
-
 Loader::Loader()
 {}
 
@@ -63,30 +60,30 @@ Loader::~Loader()
 
 RawModel Loader::loadToVAO(std::vector<float> p_positions, std::vector<float> p_colors, std::vector<float> p_texCoords, std::vector<float> p_normals, std::vector<unsigned int> p_indices)
 {
-	int vaoID = _createVAO();
-	_bindIndicesBuffer(p_indices);
-	_storeDataInAtrributeList(0, 3, p_positions);
-	_storeDataInAtrributeList(1, 3, p_colors);
-	_storeDataInAtrributeList(2, 2, p_texCoords);
-	_storeDataInAtrributeList(3, 3, p_normals);
-	_unbindVAO();
+	int vaoID = createVAO();
+	bindIndicesBuffer(p_indices);
+	storeDataInAtrributeList(0, 3, p_positions);
+	storeDataInAtrributeList(1, 3, p_colors);
+	storeDataInAtrributeList(2, 2, p_texCoords);
+	storeDataInAtrributeList(3, 3, p_normals);
+	unbindVAO();
 
 	return RawModel(vaoID, p_indices.size());
 }
 
 RawModel Loader::loadToVAO(std::vector<float> p_positions, int p_dimensions) 
 {
-	int vaoID = _createVAO();
-	_storeDataInAtrributeList(0, p_dimensions, p_positions);
-	_unbindVAO();
+	int vaoID = createVAO();
+	storeDataInAtrributeList(0, p_dimensions, p_positions);
+	unbindVAO();
 	return RawModel(vaoID, p_positions.size() / p_dimensions);
 }
 
 void Loader::cleanUp()
 {
-	glFuncs::ref().glDeleteVertexArrays(vaos.size(), vaos.data());
-	glFuncs::ref().glDeleteVertexArrays(vbos.size(), vbos.data());
-	glDeleteTextures(textures.size(), textures.data());
+	glFuncs::ref().glDeleteVertexArrays(_vaos.size(), _vaos.data());
+	glFuncs::ref().glDeleteVertexArrays(_vbos.size(), _vbos.data());
+	glDeleteTextures(_textures.size(), _textures.data());
 }
 
 GLuint Loader::loadTexture(std::string p_fileName)
@@ -95,7 +92,7 @@ GLuint Loader::loadTexture(std::string p_fileName)
 	image = getBMPData(p_fileName);
 	GLuint texID;
 	glGenTextures(1, &texID);
-	textures.push_back(texID);
+	_textures.push_back(texID);
 
 	glBindTexture(GL_TEXTURE_2D, texID);
 	
@@ -109,37 +106,37 @@ GLuint Loader::loadTexture(std::string p_fileName)
 	return texID;
 }
 
-int Loader::_createVAO()
+int Loader::createVAO()
 {
 	GLuint vaoID = 1;
 	glFuncs::ref().glGenVertexArrays(1, &vaoID);
-	vaos.push_back(vaoID);
+	_vaos.push_back(vaoID);
 	glFuncs::ref().glBindVertexArray(vaoID);
 	
 	return vaoID;
 }
 
-void Loader::_storeDataInAtrributeList(int p_attributeNumber, int p_coordinateSize, std::vector<float> p_data)
+void Loader::storeDataInAtrributeList(int p_attributeNumber, int p_coordinateSize, std::vector<float> p_data)
 {
 	GLuint vbo;
 	glFuncs::ref().glGenBuffers(1, &vbo);
-	vbos.push_back(vbo);
+	_vbos.push_back(vbo);
 	glFuncs::ref().glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glFuncs::ref().glBufferData(GL_ARRAY_BUFFER, p_data.size() * sizeof(float), p_data.data(), GL_STATIC_DRAW);
 	glFuncs::ref().glVertexAttribPointer(p_attributeNumber, p_coordinateSize, GL_FLOAT, GL_FALSE, 0, NULL);
 	glFuncs::ref().glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Loader::_unbindVAO()
+void Loader::unbindVAO()
 {
 	glFuncs::ref().glBindVertexArray(0);
 }
 
-void Loader::_bindIndicesBuffer(std::vector<unsigned int> p_indices)
+void Loader::bindIndicesBuffer(std::vector<unsigned int> p_indices)
 {
 	GLuint vboID;
 	glFuncs::ref().glGenBuffers(1, &vboID);
-	vbos.push_back(vboID);
+	_vbos.push_back(vboID);
 	glFuncs::ref().glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
 	glFuncs::ref().glBufferData(GL_ELEMENT_ARRAY_BUFFER, p_indices.size() * sizeof(unsigned int), p_indices.data(), GL_STATIC_DRAW);
 	//glFuncs::ref().glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

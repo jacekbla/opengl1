@@ -2,17 +2,17 @@
 #include "Camera.h"
 #include "Maths.h"
 
-#ifndef WATERSHADER_H
-#define WATERSHADER_H
+#ifndef WATER_SHADER_H
+#define WATER_SHADER_H
 
 
 class WaterShader : public ShaderProgram
 {
 public:
-	WaterShader() : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE)
+	explicit WaterShader() : ShaderProgram(_VERTEX_FILE, _FRAGMENT_FILE)
 	{
 		getAllUniformLocations();
-		//bindAttributes();
+		bindAttributes();
 	};
 	~WaterShader();
 
@@ -26,15 +26,15 @@ public:
 	void loadModelMatrix(glm::mat4 &p_matrix);
 
 private:
-	static const char* VERTEX_FILE;
-	static const char* FRAGMENT_FILE;
+	static const char* _VERTEX_FILE;
+	static const char* _FRAGMENT_FILE;
 
-	int location_modelMatrix;
-	int location_viewMatrix;
-	int location_projectionMatrix;
-	int location_reflectionTexture;
-	int location_refractionTexture;
+	int _location_modelMatrix;
+	int _location_viewMatrix;
+	int _location_projectionMatrix;
+	int _location_reflectionTexture;
+	int _location_refractionTexture;
 };
 
 
-#endif WATERSHADER_H
+#endif WATER_SHADER_H

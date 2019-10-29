@@ -15,9 +15,9 @@
 #include "WaterTile.h"
 #include "WaterFrameBuffers.h"
 
-void keyboard(unsigned char key, int x, int y)
+void keyboard(unsigned char p_key, int p_x, int p_y)
 {
-	switch (key)
+	switch (p_key)
 	{
 	case 033:
 	case 'q':
@@ -55,13 +55,13 @@ void display(void)
 	glEnable(GL_CLIP_DISTANCE0);
 
 	fbos->bindReflectionFrameBuffer();
-	float distance = 2 * (camera->getPosition().y - waterTile->at(0)._getHeight());
+	float distance = 2 * (camera->getPosition().y - waterTile->at(0).getHeight());
 	float originalCameraY = camera->getPosition().y;
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY - distance, camera->getPosition().z));
 	camera->invertPitch();
 	masterRenderer->processEntity(*entity);
 	masterRenderer->processEntity(*entity2);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0)._getHeight()));
+	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight()));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
 	camera->invertPitch();
 	fbos->unbindCurrentFrameBuffer();
@@ -69,7 +69,7 @@ void display(void)
 	fbos->bindRefractionFrameBuffer();
 	masterRenderer->processEntity(*entity);
 	masterRenderer->processEntity(*entity2);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0)._getHeight()));
+	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight()));
 
 
 	glDisable(GL_CLIP_DISTANCE0);

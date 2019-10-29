@@ -6,32 +6,32 @@ Entity::~Entity()
 {
 }
 
-TexturedModel Entity::getModel()
+TexturedModel Entity::getModel() const
 {
 	return _model;
 }
 
-glm::vec3 Entity::getPosition()
+glm::vec3 Entity::getPosition() const
 {
 	return _position;
 }
 
-float Entity::getRotX()
+float Entity::getRotX() const
 {
 	return _rotX;
 }
 
-float Entity::getRotY()
+float Entity::getRotY() const
 {
 	return _rotY;
 }
 
-float Entity::getRotZ()
+float Entity::getRotZ() const
 {
 	return _rotZ;
 }
 
-float Entity::getScale()
+float Entity::getScale() const
 {
 	return _scale;
 }

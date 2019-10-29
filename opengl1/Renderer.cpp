@@ -1,18 +1,18 @@
 #include "Renderer.h"
 
-const float Renderer::FOV = 90.0f;
-const float Renderer::NEAR_PLANE = 0.1f;
-const float Renderer::FAR_PLANE = 1000.0f;
+const float Renderer::_FOV = 90.0f;
+const float Renderer::_NEAR_PLANE = 0.1f;
+const float Renderer::_FAR_PLANE = 1000.0f;
 
-Renderer::Renderer(StaticShader shader)
+Renderer::Renderer(StaticShader p_shader)
 {
-	_shader = shader;
+	_shader = p_shader;
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	createProjectionMatrix();
-	shader.start();
-	shader.loadProjectionMatrix(projectionMatrix);
-	shader.stop();
+	p_shader.start();
+	p_shader.loadProjectionMatrix(_projectionMatrix);
+	p_shader.stop();
 }
 
 Renderer::~Renderer()
@@ -24,14 +24,6 @@ void Renderer::prepare()
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.4f, 0.6f, 0.9f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	/*glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
-
-	glm::mat4 Tr = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
-	glm::mat4 Rt = glm::rotate(glm::mat4(1.0f), glm::radians(150.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-	glm::mat4 mvp = Projection * Tr * Rt;
-	glFuncs::ref().glUniformMatrix4fv(locMVP, 1, GL_FALSE, &mvp[0][0]);*/
 }
 
 void Renderer::render(std::map<TexturedModel, std::vector<Entity>> p_entities)
@@ -45,20 +37,17 @@ void Renderer::render(std::map<TexturedModel, std::vector<Entity>> p_entities)
 		{
 			prepareInstance(e);
 			glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(), GL_UNSIGNED_INT, 0);
-
-			//glutSwapBuffers();
-			//glutPostRedisplay();
 		}
 		unbindTexturedModel();
 	}
 }
 
-void Renderer::renderRaw(RawModel model)
+void Renderer::renderRaw(RawModel p_model)
 {
-	glFuncs::ref().glBindVertexArray(model.getVaoID());
+	glFuncs::ref().glBindVertexArray(p_model.getVaoID());
 	glFuncs::ref().glEnableVertexAttribArray(0);
 	glFuncs::ref().glEnableVertexAttribArray(1);
-	glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, p_model.getVertexCount(), GL_UNSIGNED_INT, 0);
 
 	glutSwapBuffers();
 	glutPostRedisplay();
@@ -67,15 +56,15 @@ void Renderer::renderRaw(RawModel model)
 	glFuncs::ref().glBindVertexArray(0);
 }
 
-void Renderer::renderTextured(TexturedModel texturedModel)
+void Renderer::renderTextured(TexturedModel p_texturedModel)
 {
-	RawModel model = texturedModel.getRawModel();
+	RawModel model = p_texturedModel.getRawModel();
 	glFuncs::ref().glBindVertexArray(model.getVaoID());
 	glFuncs::ref().glEnableVertexAttribArray(0);
 	glFuncs::ref().glEnableVertexAttribArray(1);
 	glFuncs::ref().glEnableVertexAttribArray(2);
-	//glFuncs::ref().glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getTextureID());
+	glFuncs::ref().glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, p_texturedModel.getTexture().getTextureID());
 	glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
 
 	glutSwapBuffers();
@@ -119,25 +108,25 @@ void Renderer::renderEntity(Entity p_entity, StaticShader p_shader)
 	glFuncs::ref().glBindVertexArray(0);
 }
 
-glm::mat4 Renderer::getProjectionMatrix()
+glm::mat4 Renderer::getProjectionMatrix() const
 {
-	return projectionMatrix;
+	return _projectionMatrix;
 }
 
 void Renderer::createProjectionMatrix()
 {
 	float aspectRatio = (float)DisplayManager::getWIDTH() / (float)DisplayManager::getHEIGHT();
-	float y_scale = (float)((1.0f / tan(glm::radians(FOV / 2.0f))) * aspectRatio);
+	float y_scale = (float)((1.0f / tan(glm::radians(_FOV / 2.0f))) * aspectRatio);
 	float x_scale = y_scale / aspectRatio;
-	float frustum_length = FAR_PLANE - NEAR_PLANE;
+	float frustum_length = _FAR_PLANE - _NEAR_PLANE;
 
-	projectionMatrix = glm::mat4(1.0f);
-	projectionMatrix[0][0] = x_scale;
-	projectionMatrix[1][1] = y_scale;
-	projectionMatrix[2][2] = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
-	projectionMatrix[2][3] = -1.0f;
-	projectionMatrix[3][2] = -((2.0f * NEAR_PLANE * FAR_PLANE) / frustum_length);
-	projectionMatrix[3][3] = 0.0f;
+	_projectionMatrix = glm::mat4(1.0f);
+	_projectionMatrix[0][0] = x_scale;
+	_projectionMatrix[1][1] = y_scale;
+	_projectionMatrix[2][2] = -((_FAR_PLANE + _NEAR_PLANE) / frustum_length);
+	_projectionMatrix[2][3] = -1.0f;
+	_projectionMatrix[3][2] = -((2.0f * _NEAR_PLANE * _FAR_PLANE) / frustum_length);
+	_projectionMatrix[3][3] = 0.0f;
 }
 
 void Renderer::prepareTexturedModel(TexturedModel p_model)

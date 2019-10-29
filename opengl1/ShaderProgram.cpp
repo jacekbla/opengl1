@@ -2,9 +2,9 @@
 
 
 
-ShaderProgram::ShaderProgram(const char* vertexFile, const char* fragmentFile)
+ShaderProgram::ShaderProgram(const char* p_vertexFile, const char* p_fragmentFile)
 {
-	setShaders(vertexFile, fragmentFile, programHandle, vertexShaderHandle, fragmentShaderHandle);
+	setShaders(p_vertexFile, p_fragmentFile, _programHandle, _vertexShaderHandle, _fragmentShaderHandle);
 
 	bindAttributes();
 	getAllUniformLocations();
@@ -17,7 +17,7 @@ ShaderProgram::~ShaderProgram()
 
 void ShaderProgram::start()
 {
-	glFuncs::ref().glUseProgram(programHandle);
+	glFuncs::ref().glUseProgram(_programHandle);
 }
 
 void ShaderProgram::stop()
@@ -28,16 +28,16 @@ void ShaderProgram::stop()
 void ShaderProgram::cleanUp()
 {
 	stop();
-	glFuncs::ref().glDetachShader(programHandle, vertexShaderHandle);
-	glFuncs::ref().glDetachShader(programHandle, fragmentShaderHandle);
-	glFuncs::ref().glDeleteShader(vertexShaderHandle);
-	glFuncs::ref().glDeleteShader(fragmentShaderHandle);
-	glFuncs::ref().glDeleteProgram(programHandle);
+	glFuncs::ref().glDetachShader(_programHandle, _vertexShaderHandle);
+	glFuncs::ref().glDetachShader(_programHandle, _fragmentShaderHandle);
+	glFuncs::ref().glDeleteShader(_vertexShaderHandle);
+	glFuncs::ref().glDeleteShader(_fragmentShaderHandle);
+	glFuncs::ref().glDeleteProgram(_programHandle);
 }
 
-char* ShaderProgram::readShader(const char * aShaderFile)
+char* ShaderProgram::readShader(const char * p_shaderFile)
 {
-	FILE* filePointer = fopen(aShaderFile, "rb");
+	FILE* filePointer = fopen(p_shaderFile, "rb");
 	char* content = NULL;
 	long numVal = 0;
 
@@ -51,63 +51,61 @@ char* ShaderProgram::readShader(const char * aShaderFile)
 	return content;
 }
 
-void ShaderProgram::setShaders(const char* p_vertex, const char* p_pixel, int &programHandle, int &vertexShaderHandle, int &fragmentShaderHandle)
+void ShaderProgram::setShaders(const char* p_vertex, const char* p_pixel, int &p_programHandle, int &p_vertexShaderHandle, int &p_fragmentShaderHandle)
 {
 	GLint status = 0;
 
-	programHandle = glFuncs::ref().glCreateProgram();
-	vertexShaderHandle = glFuncs::ref().glCreateShader(GL_VERTEX_SHADER);
-	fragmentShaderHandle = glFuncs::ref().glCreateShader(GL_FRAGMENT_SHADER);
+	p_programHandle = glFuncs::ref().glCreateProgram();
+	p_vertexShaderHandle = glFuncs::ref().glCreateShader(GL_VERTEX_SHADER);
+	p_fragmentShaderHandle = glFuncs::ref().glCreateShader(GL_FRAGMENT_SHADER);
 
-	setShader(p_vertex, programHandle, vertexShaderHandle);
-	setShader(p_pixel, programHandle, fragmentShaderHandle);
+	setShader(p_vertex, p_programHandle, p_vertexShaderHandle);
+	setShader(p_pixel, p_programHandle, p_fragmentShaderHandle);
 
-	glFuncs::ref().glLinkProgram(programHandle);
-	glFuncs::ref().glGetObjectParameterivARB(programHandle, GL_OBJECT_LINK_STATUS_ARB, &status);
+	glFuncs::ref().glLinkProgram(p_programHandle);
+	glFuncs::ref().glGetObjectParameterivARB(p_programHandle, GL_OBJECT_LINK_STATUS_ARB, &status);
 	if (!status) {
 		const int maxInfoLogSize = 2048;
 		GLchar infoLog[maxInfoLogSize];
-		glFuncs::ref().glGetInfoLogARB(programHandle, maxInfoLogSize, NULL, infoLog);
+		glFuncs::ref().glGetInfoLogARB(p_programHandle, maxInfoLogSize, NULL, infoLog);
 		std::cout << infoLog;
 	}
-
-	//locMVP = glFuncs::ref().glGetUniformLocation(programHandle, "MVP");
 }
 
-void ShaderProgram::setShader(const char* p_file, int &programHandle, int &shaderHandle)
+void ShaderProgram::setShader(const char* p_file, int &p_programHandle, int &p_shaderHandle)
 {
 	GLint status = 0;
 
 	char* shader = readShader(p_file);
 
-	glFuncs::ref().glShaderSource(shaderHandle, 1, (const char**)&shader, NULL);
+	glFuncs::ref().glShaderSource(p_shaderHandle, 1, (const char**)&shader, NULL);
 
-	glFuncs::ref().glCompileShader(shaderHandle);
+	glFuncs::ref().glCompileShader(p_shaderHandle);
 
-	glFuncs::ref().glGetObjectParameterivARB(shaderHandle, GL_OBJECT_COMPILE_STATUS_ARB, &status);
+	glFuncs::ref().glGetObjectParameterivARB(p_shaderHandle, GL_OBJECT_COMPILE_STATUS_ARB, &status);
 	if (!status)
 	{
 		const int maxInfoLogSize = 2048;
 		GLchar infoLog[maxInfoLogSize];
-		glFuncs::ref().glGetInfoLogARB(shaderHandle, maxInfoLogSize, NULL, infoLog);
+		glFuncs::ref().glGetInfoLogARB(p_shaderHandle, maxInfoLogSize, NULL, infoLog);
 		std::cout << infoLog;
 	}
 
-	glFuncs::ref().glAttachShader(programHandle, shaderHandle);
+	glFuncs::ref().glAttachShader(p_programHandle, p_shaderHandle);
 }
 
 void ShaderProgram::bindAttributes() {}
 
 void ShaderProgram::bindAttribute(int attribute, const char* variableName)
 {
-	glFuncs::ref().glBindAttribLocation(programHandle, attribute, variableName);
+	glFuncs::ref().glBindAttribLocation(_programHandle, attribute, variableName);
 }
 
 void ShaderProgram::getAllUniformLocations() {}
 
 int ShaderProgram::getUniformLocation(const char * p_uniformName)
 {
-	return glFuncs::ref().glGetUniformLocation(programHandle, p_uniformName);
+	return glFuncs::ref().glGetUniformLocation(_programHandle, p_uniformName);
 }
 
 void ShaderProgram::loadInt(int p_location, int p_value)
@@ -115,27 +113,22 @@ void ShaderProgram::loadInt(int p_location, int p_value)
 	glFuncs::ref().glUniform1i(p_location, p_value);
 }
 
-void ShaderProgram::loadFloat(int p_location, float &p_value)
+void ShaderProgram::loadFloat(int p_location, float p_value)
 {
 	glFuncs::ref().glUniform1f(p_location, p_value);
 }
 
 void ShaderProgram::loadVector(int p_location, glm::vec3 &p_value)
 {
-	/*std::vector<float> tmp;
-	tmp.push_back(p_value.x);
-	tmp.push_back(p_value.y);
-	tmp.push_back(p_value.z);
-	glFuncs::ref().glUniform3fv(p_location, 1, &tmp[0]);*/
 	glFuncs::ref().glUniform3f(p_location, p_value.x, p_value.y, p_value.z);
 }
 
-void ShaderProgram::loadVector(int p_location, glm::vec4 & p_value)
+void ShaderProgram::loadVector(int p_location, glm::vec4 &p_value)
 {
 	glFuncs::ref().glUniform4f(p_location, p_value.x, p_value.y, p_value.z, p_value.w);
 }
 
-void ShaderProgram::loadBoolean(int p_location, bool &p_value)
+void ShaderProgram::loadBoolean(int p_location, bool p_value)
 {
 	glFuncs::ref().glUniform1f(p_location, p_value ? 1.0f : 0.0f);
 }

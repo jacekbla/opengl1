@@ -6,14 +6,14 @@
 #include "Maths.h"
 #include "WaterFrameBuffers.h"
 
-#ifndef WATERRENDERER_H
-#define WATERRENDERER_H
+#ifndef WATER_RENDERER_H
+#define WATER_RENDERER_H
 
 
 class WaterRenderer
 {
 public:
-	WaterRenderer(Loader p_loader, WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos);
+	explicit WaterRenderer(Loader p_loader, WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos);
 	~WaterRenderer();
 
 	void render(std::vector<WaterTile> p_water, Camera &p_camera);
@@ -29,4 +29,4 @@ private:
 };
 
 
-#endif WATERRENDERER_H
+#endif WATER_RENDERER_H

@@ -13,12 +13,12 @@ public:
 		_model(p_model), _position(p_position), _rotX(p_rotX), _rotY(p_rotY), _rotZ(p_rotZ), _scale(p_scale) {};
 	~Entity();
 
-	TexturedModel getModel();
-	glm::vec3 getPosition();
-	float getRotX();
-	float getRotY();
-	float getRotZ();
-	float getScale();
+	TexturedModel getModel() const;
+	glm::vec3 getPosition() const;
+	float getRotX() const;
+	float getRotY() const;
+	float getRotZ() const;
+	float getScale() const;
 	void setModel(TexturedModel p_model);
 	void setPosition(glm::vec3 p_position);
 	void setRotX(float p_rotX);

@@ -2,18 +2,18 @@
 #include "RawModel.h"
 #include "ModelTexture.h"
 
-#ifndef TEXTUREMODEL_H
-#define TEXTUREMODEL_H
+#ifndef TEXTURE_MODEL_H
+#define TEXTURE_MODEL_H
 
 class TexturedModel
 {
 public:
-	TexturedModel() : TexturedModel(RawModel(), ModelTexture()) {};
-	TexturedModel(RawModel model, ModelTexture texture) : _rawModel(model), _texture(texture) {};
+	explicit TexturedModel() : TexturedModel(RawModel(), ModelTexture()) {};
+	explicit TexturedModel(RawModel p_model, ModelTexture p_texture) : _rawModel(p_model), _texture(p_texture) {};
 	~TexturedModel();
 
-	RawModel getRawModel();
-	ModelTexture &getTexture();
+	RawModel getRawModel() const;
+	ModelTexture getTexture() const;
 	bool operator<(const TexturedModel& p_other) const;
 
 private:
@@ -22,4 +22,4 @@ private:
 };
 
 
-#endif TEXTUREMODEL_H
+#endif TEXTURE_MODEL_H
