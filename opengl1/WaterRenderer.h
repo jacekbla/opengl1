@@ -5,6 +5,7 @@
 #include "WaterTile.h"
 #include "Maths.h"
 #include "WaterFrameBuffers.h"
+#include "DisplayManager.h"
 
 #ifndef WATER_RENDERER_H
 #define WATER_RENDERER_H
@@ -19,9 +20,14 @@ public:
 	void render(std::vector<WaterTile> p_water, Camera &p_camera);
 
 private:
+	static const char* _DUDV_MAP;
+	static const float _WAVE_SPEED;
+
 	RawModel _quad;
 	WaterShader _shader;
 	WaterFrameBuffers _fbos;
+	float _moveFactor = 0.0f;
+	int _dudvTexture;
 
 	void prepare(Camera &p_camera);
 	void unbind();

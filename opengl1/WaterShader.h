@@ -24,6 +24,7 @@ public:
 	void loadProjectionMatrix(glm::mat4 &p_matrix);
 	void loadViewMatrix(Camera &p_camera);
 	void loadModelMatrix(glm::mat4 &p_matrix);
+	void loadMoveFactor(float p_factor);
 
 private:
 	static const char* _VERTEX_FILE;
@@ -34,6 +35,8 @@ private:
 	int _location_projectionMatrix;
 	int _location_reflectionTexture;
 	int _location_refractionTexture;
+	int _location_dudvMap;
+	int _location_moveFactor;
 };
 
 
