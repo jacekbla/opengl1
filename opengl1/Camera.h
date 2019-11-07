@@ -25,6 +25,9 @@ private:
 	float _pitch = 0.0f;
 	float _yaw = 0.0f;
 	float _roll = 0.0f;
+
+	int _currMouseX;
+	int _currMouseY;
 };
 
 

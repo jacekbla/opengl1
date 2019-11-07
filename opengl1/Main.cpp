@@ -31,6 +31,10 @@ RawModel* rawModel;
 TexturedModel* texturedModel;
 Entity* entity;
 
+RawModel* rawModel_tree;
+TexturedModel* texturedModel_tree;
+Entity* entity_tree;
+
 RawModel* rawModel2;
 TexturedModel* texturedModel2;
 Entity* entity2;
@@ -60,6 +64,7 @@ void display(void)
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY - distance, camera->getPosition().z));
 	camera->invertPitch();
 	masterRenderer->processEntity(*entity);
+	masterRenderer->processEntity(*entity_tree);
 	masterRenderer->processEntity(*entity2);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight()));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
@@ -68,6 +73,7 @@ void display(void)
 
 	fbos->bindRefractionFrameBuffer();
 	masterRenderer->processEntity(*entity);
+	masterRenderer->processEntity(*entity_tree);
 	masterRenderer->processEntity(*entity2);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight()));
 
@@ -77,6 +83,7 @@ void display(void)
 
 
 	masterRenderer->processEntity(*entity);
+	masterRenderer->processEntity(*entity_tree);
 	masterRenderer->processEntity(*entity2);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, -1.0f));
 	waterRenderer->render(*waterTile, *camera);
@@ -95,19 +102,26 @@ int main(int argc, char **argv)
 	rawModel = &loadOBJ("res/lake1.obj", loader);
 	ModelTexture texture(loader.loadTexture("res/green.bmp"));
 	texture.setShineDamper(30.0f);
-	texture.setReflectivity(0.3f);
+	texture.setReflectivity(0.4f);
 	texturedModel = new TexturedModel(*rawModel, texture);
+
+	rawModel_tree = &loadOBJ("res/tree.obj", loader);
+	ModelTexture texture_tree(loader.loadTexture("res/green.bmp"));
+	texture_tree.setShineDamper(20.0f);
+	texture_tree.setReflectivity(0.3f);
+	texturedModel_tree = new TexturedModel(*rawModel_tree, texture_tree);
 
 	rawModel2 = &loadOBJ("res/elephun.obj", loader);
 	ModelTexture texture2(loader.loadTexture("res/empty.bmp"));
 	texture2.setShineDamper(10.0f);
-	texture2.setReflectivity(5.0f);
+	texture2.setReflectivity(0.0f);
 	texturedModel2 = new TexturedModel(*rawModel2, texture2);
 
 	shader = new StaticShader();
 	entity = new Entity(*texturedModel, glm::vec3(0.0f, -3.0f, -7.0f), 0.0f, 0.0f, 0.0f, 1.0f);
-	entity2 = new Entity(*texturedModel2, glm::vec3(0.0f, -1.0f, -11.0f), 0.0f, 225.0f, 0.0f, 0.3f);
-	light = new Light(glm::vec3(5.0f, -10.0f, -12.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	entity_tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 0.0f, 0.0f, 1.0f);
+	entity2 = new Entity(*texturedModel2, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
+	light = new Light(glm::vec3(20.0f, -20.0f, -20.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	camera = new Camera(2.0f, 0.0f, 0.0f);
 	renderer = new Renderer(*shader);
 	

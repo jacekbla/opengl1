@@ -1,7 +1,7 @@
 #include "WaterRenderer.h"
 
 
-const char* WaterRenderer::_DUDV_MAP = "dudv_water_map1.bmp";
+const char* WaterRenderer::_DUDV_MAP = "res/dudv/dudv_water_map1.bmp";
 const float WaterRenderer::_WAVE_SPEED = 0.05f;
 
 WaterRenderer::WaterRenderer(Loader p_loader, WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos)
@@ -24,7 +24,8 @@ WaterRenderer::~WaterRenderer()
 void WaterRenderer::render(std::vector<WaterTile> p_water, Camera & p_camera)
 {
 	prepare(p_camera);
-	for (WaterTile tile : p_water) {
+	for (WaterTile tile : p_water) 
+	{
 		glm::mat4 modelMatrix = Maths::createTransformMatrix(glm::fvec3(tile.getX(), tile.getHeight(), tile.getZ()), 0.0f, 0.0f, 0.0f, WaterTile::TILE_SIZE);
 		_shader.loadModelMatrix(modelMatrix);
 

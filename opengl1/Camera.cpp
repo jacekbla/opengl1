@@ -54,14 +54,6 @@ void Camera::move()
 	{
 		_position.z += 0.2f;
 	}
-	if (GetKeyState('Z') & 0x8000)
-	{
-		_pitch += 0.2f;
-	}
-	if (GetKeyState('X') & 0x8000)
-	{
-		_pitch -= 0.2f;
-	}
 	if (GetKeyState(' ') & 0x8000)
 	{
 		_position.y += 0.2f;
@@ -70,4 +62,34 @@ void Camera::move()
 	{
 		_position.y -= 0.2f;
 	}
+	if (GetKeyState(VK_DOWN) & 0x8000)
+	{
+		_pitch += 0.5f;
+	}
+	if (GetKeyState(VK_UP) & 0x8000)
+	{
+		_pitch -= 0.5f;
+	}
+	if (GetKeyState(VK_LEFT) & 0x8000)
+	{
+		_yaw -= 0.5f;
+	}
+	if (GetKeyState(VK_RIGHT) & 0x8000)
+	{
+		_yaw += 0.5f;
+	}
+	POINT mousePos;
+	GetCursorPos(&mousePos);
+	if (GetKeyState(VK_RBUTTON) & 0x100)
+	{
+		int diffX = mousePos.x - _currMouseX;
+		int diffY = mousePos.y - _currMouseY;
+		if (diffX != 0 || diffY != 0)
+		{
+			_yaw += diffX * 0.1f;
+			_pitch += diffY * 0.1f;
+		}
+	}
+	_currMouseX = mousePos.x;
+	_currMouseY = mousePos.y;
 }
