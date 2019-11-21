@@ -37,6 +37,7 @@ private:
 	int _location_refractionTexture;
 	int _location_dudvMap;
 	int _location_moveFactor;
+	int _location_cameraPosition;
 };
 
 

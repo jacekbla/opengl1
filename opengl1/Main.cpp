@@ -27,17 +27,17 @@ void keyboard(unsigned char p_key, int p_x, int p_y)
 	}
 }
 
-RawModel* rawModel;
-TexturedModel* texturedModel;
-Entity* entity;
+RawModel* rawModel_terrain;
+TexturedModel* texturedModel_terrain;
+Entity* terrain;
 
 RawModel* rawModel_tree;
 TexturedModel* texturedModel_tree;
-Entity* entity_tree;
+Entity* tree;
 
-RawModel* rawModel2;
-TexturedModel* texturedModel2;
-Entity* entity2;
+RawModel* rawModel_elephant;
+TexturedModel* texturedModel_elephant;
+Entity* elephant;
 
 Renderer* renderer;
 StaticShader* shader;
@@ -63,18 +63,18 @@ void display(void)
 	float originalCameraY = camera->getPosition().y;
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY - distance, camera->getPosition().z));
 	camera->invertPitch();
-	masterRenderer->processEntity(*entity);
-	masterRenderer->processEntity(*entity_tree);
-	masterRenderer->processEntity(*entity2);
+	masterRenderer->processEntity(*terrain);
+	masterRenderer->processEntity(*tree);
+	masterRenderer->processEntity(*elephant);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight()));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
 	camera->invertPitch();
 	fbos->unbindCurrentFrameBuffer();
 
 	fbos->bindRefractionFrameBuffer();
-	masterRenderer->processEntity(*entity);
-	masterRenderer->processEntity(*entity_tree);
-	masterRenderer->processEntity(*entity2);
+	masterRenderer->processEntity(*terrain);
+	masterRenderer->processEntity(*tree);
+	masterRenderer->processEntity(*elephant);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight()));
 
 
@@ -82,9 +82,9 @@ void display(void)
 	fbos->unbindCurrentFrameBuffer();
 
 
-	masterRenderer->processEntity(*entity);
-	masterRenderer->processEntity(*entity_tree);
-	masterRenderer->processEntity(*entity2);
+	masterRenderer->processEntity(*terrain);
+	masterRenderer->processEntity(*tree);
+	masterRenderer->processEntity(*elephant);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, -1.0f));
 	waterRenderer->render(*waterTile, *camera);
 
@@ -99,11 +99,11 @@ int main(int argc, char **argv)
 
 	Loader loader;
 
-	rawModel = &loadOBJ("res/lake1.obj", loader);
+	rawModel_terrain = &loadOBJ("res/lake1.obj", loader);
 	ModelTexture texture(loader.loadTexture("res/green.bmp"));
 	texture.setShineDamper(30.0f);
 	texture.setReflectivity(0.4f);
-	texturedModel = new TexturedModel(*rawModel, texture);
+	texturedModel_terrain = new TexturedModel(*rawModel_terrain, texture);
 
 	rawModel_tree = &loadOBJ("res/tree.obj", loader);
 	ModelTexture texture_tree(loader.loadTexture("res/green.bmp"));
@@ -111,16 +111,16 @@ int main(int argc, char **argv)
 	texture_tree.setReflectivity(0.3f);
 	texturedModel_tree = new TexturedModel(*rawModel_tree, texture_tree);
 
-	rawModel2 = &loadOBJ("res/elephun.obj", loader);
+	rawModel_elephant = &loadOBJ("res/elephun.obj", loader);
 	ModelTexture texture2(loader.loadTexture("res/empty.bmp"));
 	texture2.setShineDamper(10.0f);
 	texture2.setReflectivity(0.0f);
-	texturedModel2 = new TexturedModel(*rawModel2, texture2);
+	texturedModel_elephant = new TexturedModel(*rawModel_elephant, texture2);
 
 	shader = new StaticShader();
-	entity = new Entity(*texturedModel, glm::vec3(0.0f, -3.0f, -7.0f), 0.0f, 0.0f, 0.0f, 1.0f);
-	entity_tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 0.0f, 0.0f, 1.0f);
-	entity2 = new Entity(*texturedModel2, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
+	terrain = new Entity(*texturedModel_terrain, glm::vec3(0.0f, -3.0f, -7.0f), 0.0f, 0.0f, 0.0f, 1.0f);
+	tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 0.0f, 0.0f, 1.0f);
+	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
 	light = new Light(glm::vec3(20.0f, -20.0f, -20.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	camera = new Camera(2.0f, 0.0f, 0.0f);
 	renderer = new Renderer(*shader);
@@ -144,9 +144,13 @@ int main(int argc, char **argv)
 	masterRenderer->cleanUp();
 	loader.cleanUp();
 	delete camera;
-	delete entity;
 	delete light;
-	delete texturedModel;
+	delete terrain;
+	delete texturedModel_terrain;
+	delete elephant;
+	delete texturedModel_elephant;
+	delete tree;
+	delete texturedModel_tree;
 	delete shader;
 	delete renderer;
 	delete masterRenderer;
