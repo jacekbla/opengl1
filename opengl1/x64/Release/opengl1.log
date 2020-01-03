@@ -1,0 +1,74 @@
+﻿  Camera.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  DisplayManager.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  Entity.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  glFuncs.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  Light.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  Loader.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+d:\github\opengl1\opengl1\loader.cpp(42): warning C4018: '<': signed/unsigned mismatch
+d:\github\opengl1\opengl1\loader.cpp(71): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+d:\github\opengl1\opengl1\loader.cpp(79): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+d:\github\opengl1\opengl1\loader.cpp(84): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+d:\github\opengl1\opengl1\loader.cpp(85): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+d:\github\opengl1\opengl1\loader.cpp(86): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  Main.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  MasterRenderer.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  Maths.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  ModelTexture.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  OBJLoader.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  RawModel.cpp
+  Renderer.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  ShaderProgram.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  StaticShader.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  TexturedModel.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  Utility.cpp
+  WaterFrameBuffers.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  WaterRenderer.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  WaterShader.cpp
+e:\windows kits\10\include\10.0.17763.0\shared\minwindef.h(127): warning C4005: 'CALLBACK': macro redefinition
+  d:\github\opengl1\opengl1\gl\glut.h(34): note: see previous definition of 'CALLBACK'
+  Compiling...
+  WaterTile.cpp
+DisplayManager.obj : error LNK2001: unresolved external symbol __imp_glutInit
+DisplayManager.obj : error LNK2001: unresolved external symbol __imp_glutPostRedisplay
+DisplayManager.obj : error LNK2001: unresolved external symbol __imp_glutCreateWindow
+DisplayManager.obj : error LNK2001: unresolved external symbol __imp_glutInitDisplayMode
+DisplayManager.obj : error LNK2001: unresolved external symbol __imp_glutInitWindowSize
+DisplayManager.obj : error LNK2001: unresolved external symbol __imp_glutSwapBuffers
+Main.obj : error LNK2001: unresolved external symbol __imp_glutKeyboardFunc
+Main.obj : error LNK2001: unresolved external symbol __imp_glutDisplayFunc
+Main.obj : error LNK2001: unresolved external symbol __imp_glutMainLoop
+D:\GitHub\opengl1\x64\Release\opengl1.exe : fatal error LNK1120: 9 unresolved externals
