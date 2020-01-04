@@ -35,6 +35,10 @@ RawModel* rawModel_tree;
 TexturedModel* texturedModel_tree;
 Entity* tree;
 
+RawModel* rawModel_tree2;
+TexturedModel* texturedModel_tree2;
+Entity* tree2;
+
 RawModel* rawModel_elephant;
 TexturedModel* texturedModel_elephant;
 Entity* elephant;
@@ -65,6 +69,7 @@ void display(void)
 	camera->invertPitch();
 	masterRenderer->processEntity(*terrain);
 	masterRenderer->processEntity(*tree);
+	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight()));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
@@ -74,6 +79,7 @@ void display(void)
 	fbos->bindRefractionFrameBuffer();
 	masterRenderer->processEntity(*terrain);
 	masterRenderer->processEntity(*tree);
+	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight()));
 
@@ -84,6 +90,7 @@ void display(void)
 
 	masterRenderer->processEntity(*terrain);
 	masterRenderer->processEntity(*tree);
+	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, -1.0f));
 	waterRenderer->render(*waterTile, *camera);
@@ -105,11 +112,17 @@ int main(int argc, char **argv)
 	texture.setReflectivity(0.4f);
 	texturedModel_terrain = new TexturedModel(*rawModel_terrain, texture);
 
-	rawModel_tree = &loadOBJ("res/tree.obj", loader);
-	ModelTexture texture_tree(loader.loadTexture("res/green.bmp"));
+	rawModel_tree = &loadOBJ("res/tree_noleaves.obj", loader);
+	ModelTexture texture_tree(loader.loadTexture("res/brown.bmp"));
 	texture_tree.setShineDamper(20.0f);
 	texture_tree.setReflectivity(0.3f);
 	texturedModel_tree = new TexturedModel(*rawModel_tree, texture_tree);
+
+	rawModel_tree2 = &loadOBJ("res/tree_noleaves.obj", loader);
+	ModelTexture texture_tree2(loader.loadTexture("res/brown.bmp"));
+	texture_tree2.setShineDamper(20.0f);
+	texture_tree2.setReflectivity(0.3f);
+	texturedModel_tree2 = new TexturedModel(*rawModel_tree2, texture_tree2);
 
 	rawModel_elephant = &loadOBJ("res/elephun.obj", loader);
 	ModelTexture texture2(loader.loadTexture("res/empty.bmp"));
@@ -119,7 +132,8 @@ int main(int argc, char **argv)
 
 	shader = new StaticShader();
 	terrain = new Entity(*texturedModel_terrain, glm::vec3(0.0f, -3.0f, -7.0f), 0.0f, 0.0f, 0.0f, 1.0f);
-	tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 0.0f, 0.0f, 1.0f);
+	tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 40.0f, 0.0f, 1.0f);
+	tree2 = new Entity(*texturedModel_tree2, glm::vec3(1.4f, -1.9f, -13.0f), 0.0f, 150.0f, 0.0f, 1.3f);
 	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
 	light = new Light(glm::vec3(20.0f, -20.0f, -20.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	camera = new Camera(2.0f, 0.0f, 0.0f);
@@ -150,7 +164,9 @@ int main(int argc, char **argv)
 	delete elephant;
 	delete texturedModel_elephant;
 	delete tree;
+	delete tree2;
 	delete texturedModel_tree;
+	delete texturedModel_tree2;
 	delete shader;
 	delete renderer;
 	delete masterRenderer;
