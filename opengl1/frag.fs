@@ -23,7 +23,7 @@ void main()
 	vec3 diffuse = brightness * lightColor;
 
 	vec3 unitToCameraVector = normalize(vToCameraVector);
-	vec3 lightDirection = -unitToLightVector;
+	vec3 lightDirection = unitToLightVector;
 	vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
 
 	float specularFactor = dot(reflectedLightDirection, unitToCameraVector);
@@ -31,6 +31,8 @@ void main()
 	float dampedFactor = pow(specularFactor, shineDamper);
 	vec3 finalSpecular = dampedFactor * reflectivity * lightColor;
 
+	//float attenuation=2.0f/(pow(distance(vToLightVector, vec3(0.0,0.0,0.0)),1.3f)*0.2);
+    float attenuation=1.0f;
 	//fColor = vec4(vColorFrag, 1.0);
-	fColor = vec4(diffuse, 1.0) * texture(textureSampler, vTexCoordsFrag) + vec4(finalSpecular, 1.0);
+	fColor = vec4(diffuse, 1.0) * texture(textureSampler, vTexCoordsFrag)*attenuation + vec4(finalSpecular, 1.0)*attenuation;
 }

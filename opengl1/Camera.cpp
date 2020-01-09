@@ -40,27 +40,27 @@ void Camera::move()
 {
 	if (GetKeyState('W') & 0x8000)
 	{
-		_position.z -= 0.2f;
+		_position.z -= 0.1f;
 	}
 	if (GetKeyState('D') & 0x8000)
 	{
-		_position.x += 0.2f;
+		_position.x += 0.1f;
 	}
 	if (GetKeyState('A') & 0x8000)
 	{
-		_position.x -= 0.2f;
+		_position.x -= 0.1f;
 	}
 	if (GetKeyState('S') & 0x8000)
 	{
-		_position.z += 0.2f;
+		_position.z += 0.1f;
 	}
 	if (GetKeyState(' ') & 0x8000)
 	{
-		_position.y += 0.2f;
+		_position.y += 0.1f;
 	}
 	if (GetKeyState('C') & 0x8000)
 	{
-		_position.y -= 0.2f;
+		_position.y -= 0.1f;
 	}
 	if (GetKeyState(VK_DOWN) & 0x8000)
 	{

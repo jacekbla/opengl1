@@ -1,6 +1,6 @@
 #include "StaticShader.h"
 
-const char* StaticShader::_VERTEX_FILE = "vert.vs";
+const char* StaticShader::_VERTEX_FILE = "vert.vxs";
 const char* StaticShader::_FRAGMENT_FILE = "frag.fs";
 
 

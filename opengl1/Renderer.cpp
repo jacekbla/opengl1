@@ -19,10 +19,10 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::prepare()
+void Renderer::prepare(glm::vec3 skyColor)
 {
 	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.4f, 0.6f, 0.9f, 1.0f);
+	glClearColor(skyColor.x, skyColor.y, skyColor.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

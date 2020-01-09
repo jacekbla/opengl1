@@ -16,7 +16,7 @@ public:
 	explicit Renderer(StaticShader p_shader);
 	~Renderer();
 
-	void prepare();
+	void prepare(glm::vec3 skyColor);
 	void render(std::map<TexturedModel, std::vector<Entity>> p_entities);
 	void renderRaw(RawModel p_model);
 	void renderTextured(TexturedModel p_texturedModel);

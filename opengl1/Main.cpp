@@ -54,11 +54,65 @@ WaterRenderer* waterRenderer;
 WaterShader* waterShader;
 WaterFrameBuffers* fbos;
 
+float sunAngle = 0;
+float angleDiff = 0.02f;
+const float PI = 3.141592653589793238462643383279502884197169f;
+
+glm::fvec3 rotatePoint(glm::fvec3 point, glm::fvec3  center, float angleDeg) {
+
+	float angle = angleDeg * (PI/ 180.0); // deg->rad
+
+	glm::vec3 axis = glm::vec3(0, 0, 1); // any perpendicular vector to `p1-p0` if `p1-p0` is parallel to (0,0,1) then use `(0,1,0)` instead
+	// construct transform matrix
+	glm::mat4 m = glm::identity<glm::mat4>(); // unit matrix
+	m = glm::translate(m, +center);
+	m = glm::rotate(m, angle, axis);
+	m = glm::translate(m, -center); // here m should be your rotation matrix
+	// use transform matrix
+	glm::vec3 rotatedPoint = glm::vec4(point, 1.0) * m;
+	return rotatedPoint;
+}
+
+void changeLight() {
+	glm::fvec3 lightRed(0.62, 0.38, 0);
+	glm::fvec3 lightBlue(0.45f, 0.65f, 0.95f);
+	glm::fvec3 lightWhite(1.0f, 1.0f, 1.0f);
+
+	float angle = angleDiff * (PI / 180.0);
+	sunAngle += angle;
+
+	if (sunAngle > 1.5707963268 && sunAngle < 4.7123889804) {
+		lightBlue = glm::vec3(0.0f, 0.0f, 0.0f);
+		lightWhite = glm::vec3(0.0f, 0.0f, 0.0f);
+	}
+
+	
+	lightRed = glm::fvec3(lightRed.x * glm::sin(sunAngle)* glm::sin(sunAngle), lightRed.y * glm::sin(sunAngle)* glm::sin(sunAngle), lightRed.z * glm::sin(sunAngle)* glm::sin(sunAngle));
+	lightWhite = glm::fvec3(lightWhite.x * glm::cos(sunAngle)* glm::cos(sunAngle), lightWhite.y * glm::cos(sunAngle)* glm::cos(sunAngle), lightWhite.z * glm::cos(sunAngle)* glm::cos(sunAngle));
+	lightBlue = glm::fvec3(lightBlue.x * glm::cos(sunAngle) * glm::cos(sunAngle), lightBlue.y * glm::cos(sunAngle) * glm::cos(sunAngle), lightBlue.z * glm::cos(sunAngle) * glm::cos(sunAngle));
+
+	glm::fvec3 lightColor = glm::fvec3(lightRed.x + lightWhite.x, lightRed.y + lightWhite.y, lightRed.z + lightWhite.z);
+	glm::fvec3 skyColor = glm::fvec3(lightRed.x + lightBlue.x, lightRed.y + lightBlue.y, lightRed.z + lightBlue.z);
+
+	if (sunAngle > 6.2831853072) {
+		sunAngle -= 6.2831853072;
+	}
+
+	light->setColor(lightColor);
+	light->setSkyColor(skyColor);
+}
+
+
 void display(void)
 {
 	//entity->increasePosition(0.0f, 0.0f, -0.002f);
 	//entity->increaseRotation(0.0f, 1.0f, 0.0f);
 	camera->move();
+
+	glm::vec3 center(0.0f, 0.0f, -8.0f);
+	light->setPostion(rotatePoint(light->getPostion(), center, angleDiff));
+	//elephant->setPosition(rotatePoint(light->getPostion(), center, angleDiff));
+	changeLight();
 
 	glEnable(GL_CLIP_DISTANCE0);
 
@@ -92,11 +146,13 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, -1.0f));
+	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, 100.0f));
 	waterRenderer->render(*waterTile, *camera);
 
 	DisplayManager::updateDisplay();
 }
+
+
 
 int main(int argc, char **argv)
 {
@@ -134,13 +190,13 @@ int main(int argc, char **argv)
 	terrain = new Entity(*texturedModel_terrain, glm::vec3(0.0f, -3.0f, -7.0f), 0.0f, 0.0f, 0.0f, 1.0f);
 	tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 40.0f, 0.0f, 1.0f);
 	tree2 = new Entity(*texturedModel_tree2, glm::vec3(1.4f, -1.9f, -13.0f), 0.0f, 150.0f, 0.0f, 1.3f);
-	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
-	light = new Light(glm::vec3(20.0f, -20.0f, -20.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -12.0f), 5.0f, 225.0f, 0.0f, 0.3f);
+	light = new Light(glm::vec3(0.0f, 10.0f, -8.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.6f, 0.9f));
 	camera = new Camera(2.0f, 0.0f, 0.0f);
 	renderer = new Renderer(*shader);
-	
 	masterRenderer = new MasterRenderer();
-
+	//center
+	//(0.0f, 0.0f, -7.0f)
 	//water
 	fbos = new WaterFrameBuffers();
 	waterShader = new WaterShader();
@@ -150,8 +206,7 @@ int main(int argc, char **argv)
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
 
-	glutMainLoop();
-
+	glutMainLoop();	
 
 	fbos->cleanUp();
 	waterShader->cleanUp();

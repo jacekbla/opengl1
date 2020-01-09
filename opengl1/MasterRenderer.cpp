@@ -20,7 +20,7 @@ void MasterRenderer::cleanUp()
 
 void MasterRenderer::render(Light p_light, Camera p_camera, glm::fvec4 p_clipPlane)
 {
-	_renderer->prepare();
+	_renderer->prepare(p_light.getSkyColor());
 	_shader.start();
 	_shader.loadClipPlane(p_clipPlane);
 	_shader.loadLight(p_light);
