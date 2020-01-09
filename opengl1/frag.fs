@@ -23,7 +23,7 @@ void main()
 	vec3 diffuse = brightness * lightColor;
 
 	vec3 unitToCameraVector = normalize(vToCameraVector);
-	vec3 lightDirection = unitToLightVector;
+	vec3 lightDirection = -unitToLightVector;
 	vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
 
 	float specularFactor = dot(reflectedLightDirection, unitToCameraVector);
