@@ -62,6 +62,7 @@ void display(void)
 
 	glEnable(GL_CLIP_DISTANCE0);
 
+	//render reflection texture to fbo
 	fbos->bindReflectionFrameBuffer();
 	float distance = 2 * (camera->getPosition().y - waterTile->at(0).getHeight());
 	float originalCameraY = camera->getPosition().y;
@@ -71,23 +72,23 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight()));
+	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight() + 0.5f));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
 	camera->invertPitch();
 	fbos->unbindCurrentFrameBuffer();
 
+	//render refraction texture to fbo
 	fbos->bindRefractionFrameBuffer();
 	masterRenderer->processEntity(*terrain);
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight()));
+	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight() + 0.5f));
 
 
+	//render to screen
 	glDisable(GL_CLIP_DISTANCE0);
 	fbos->unbindCurrentFrameBuffer();
-
-
 	masterRenderer->processEntity(*terrain);
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
