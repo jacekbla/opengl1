@@ -1,7 +1,7 @@
 #include "WaterRenderer.h"
 
 
-const char* WaterRenderer::_DUDV_MAP = "res/dudv/dudv_water_map1.bmp";
+const char* WaterRenderer::_DUDV_MAP = "res/dudv/dudv_water_map4.bmp";
 const float WaterRenderer::_WAVE_SPEED = 0.05f;
 
 WaterRenderer::WaterRenderer(Loader p_loader, WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos)
