@@ -15,6 +15,8 @@
 #include "WaterTile.h"
 #include "WaterFrameBuffers.h"
 
+#include "Tess.h"
+
 void keyboard(unsigned char p_key, int p_x, int p_y)
 {
 	switch (p_key)
@@ -53,6 +55,8 @@ std::vector<WaterTile>* waterTile;
 WaterRenderer* waterRenderer;
 WaterShader* waterShader;
 WaterFrameBuffers* fbos;
+
+Tess* tess;
 
 void display(void)
 {
@@ -95,6 +99,8 @@ void display(void)
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, -1.0f));
 	waterRenderer->render(*waterTile, *camera);
+
+	tess->render(*camera);
 
 	DisplayManager::updateDisplay();
 }
@@ -148,6 +154,8 @@ int main(int argc, char **argv)
 	waterRenderer = new WaterRenderer(loader, *waterShader, renderer->getProjectionMatrix(), *fbos);
 	waterTile = new std::vector<WaterTile>({ WaterTile(0.0f, -7.0f, -2.5f) });
 
+	tess = new Tess(loader, renderer->getProjectionMatrix());
+
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
 
@@ -158,6 +166,9 @@ int main(int argc, char **argv)
 	waterShader->cleanUp();
 	masterRenderer->cleanUp();
 	loader.cleanUp();
+
+	tess->cleanUp();
+
 	delete camera;
 	delete light;
 	delete terrain;
@@ -175,6 +186,9 @@ int main(int argc, char **argv)
 	delete waterShader;
 	delete waterRenderer;
 	delete fbos;
+
+	delete tess;
+
 	DisplayManager::closeDisplay();
 
 	return 0;

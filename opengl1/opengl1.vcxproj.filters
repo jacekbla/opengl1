@@ -58,6 +58,12 @@
     <Filter Include="Source Files\water">
       <UniqueIdentifier>{e4f30258-cbd5-40ef-ae6f-c74f7b7c8c41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\tesselation">
+      <UniqueIdentifier>{1d0a2069-901b-476f-baca-9bc69653c1f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tesselation">
+      <UniqueIdentifier>{b127a063-d8f5-404a-ad4c-edaf31b1ad9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DisplayManager.cpp">
@@ -123,6 +129,9 @@
     <ClCompile Include="WaterFrameBuffers.cpp">
       <Filter>Source Files\water</Filter>
     </ClCompile>
+    <ClCompile Include="Tess.cpp">
+      <Filter>Source Files\tesselation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DisplayManager.h">
@@ -185,6 +194,9 @@
     <ClInclude Include="WaterFrameBuffers.h">
       <Filter>Header Files\water</Filter>
     </ClInclude>
+    <ClInclude Include="Tess.h">
+      <Filter>Header Files\tesselation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="frag.fs">
@@ -198,6 +210,21 @@
     </None>
     <None Include="waterVert.vs">
       <Filter>Source Files\water</Filter>
+    </None>
+    <None Include="1_vs.GLSL">
+      <Filter>Source Files\tesselation</Filter>
+    </None>
+    <None Include="2_tc.GLSL">
+      <Filter>Source Files\tesselation</Filter>
+    </None>
+    <None Include="3_te.GLSL">
+      <Filter>Source Files\tesselation</Filter>
+    </None>
+    <None Include="4_gs.GLSL">
+      <Filter>Source Files\tesselation</Filter>
+    </None>
+    <None Include="5_fs.GLSL">
+      <Filter>Source Files\tesselation</Filter>
     </None>
   </ItemGroup>
 </Project>
