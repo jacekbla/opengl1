@@ -24,6 +24,12 @@ void keyboard(unsigned char p_key, int p_x, int p_y)
 	case 'Q':
 		exit(EXIT_SUCCESS);
 		break;
+	case '1':
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+	case '2':
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
 	}
 }
 
@@ -136,7 +142,7 @@ int main(int argc, char **argv)
 	tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 40.0f, 0.0f, 1.0f);
 	tree2 = new Entity(*texturedModel_tree2, glm::vec3(1.4f, -1.9f, -13.0f), 0.0f, 150.0f, 0.0f, 1.3f);
 	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
-	light = new Light(glm::vec3(20.0f, -20.0f, -20.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	light = new Light(glm::vec3(-10.0f, 10.0f, 5.0f), glm::vec3(0.9f, 0.9f, 0.9f));
 	camera = new Camera(2.0f, 0.0f, 0.0f);
 	renderer = new Renderer(*shader);
 	
@@ -146,7 +152,7 @@ int main(int argc, char **argv)
 	fbos = new WaterFrameBuffers();
 	waterShader = new WaterShader();
 	waterRenderer = new WaterRenderer(loader, *waterShader, renderer->getProjectionMatrix(), *fbos);
-	waterTile = new std::vector<WaterTile>({ WaterTile(0.0f, -7.0f, -2.5f) });
+	waterTile = new std::vector<WaterTile>({ WaterTile(0.0f, -7.0f, -2.5f)});
 
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
