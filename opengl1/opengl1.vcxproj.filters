@@ -123,6 +123,9 @@
     <ClCompile Include="WaterFrameBuffers.cpp">
       <Filter>Source Files\water</Filter>
     </ClCompile>
+    <ClCompile Include="WaterGenerator.cpp">
+      <Filter>Source Files\water</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DisplayManager.h">
@@ -183,6 +186,9 @@
       <Filter>Header Files\water</Filter>
     </ClInclude>
     <ClInclude Include="WaterFrameBuffers.h">
+      <Filter>Header Files\water</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterGenerator.h">
       <Filter>Header Files\water</Filter>
     </ClInclude>
   </ItemGroup>

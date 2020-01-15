@@ -20,3 +20,13 @@ float WaterTile::getZ() const
 {
 	return _z;
 }
+
+int WaterTile::getVertexCount() const
+{
+	return _quad.getVertexCount();
+}
+
+int WaterTile::getVaoID() const
+{
+	return _quad.getVaoID();
+}

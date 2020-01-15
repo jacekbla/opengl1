@@ -14,16 +14,16 @@
 class WaterRenderer
 {
 public:
-	explicit WaterRenderer(Loader p_loader, WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos);
+	explicit WaterRenderer(Loader p_loader, WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos, WaterTile& p_quad);
 	~WaterRenderer();
 
-	void render(std::vector<WaterTile> p_water, Camera &p_camera);
+	void render(Camera &p_camera);
 
 private:
 	static const char* _DUDV_MAP;
 	static const float _WAVE_SPEED;
 
-	RawModel _quad;
+	WaterTile _quad;
 	WaterShader _shader;
 	WaterFrameBuffers _fbos;
 	float _moveFactor = 0.0f;
@@ -31,7 +31,7 @@ private:
 
 	void prepare(Camera &p_camera);
 	void unbind();
-	void setUpVAO(Loader p_loader);
+	//void setUpVAO(Loader p_loader);
 };
 
 

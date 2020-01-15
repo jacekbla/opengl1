@@ -1,6 +1,7 @@
 #version 430
 
-in vec2 vPosition;
+layout(location = 0) in vec2 vPosition;
+layout(location = 1) in vec4 vIndicators;
 
 out vec4 clipSpace;
 out vec2 textureCoords;
