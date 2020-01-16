@@ -139,6 +139,7 @@
     <ClCompile Include="TexturedModel.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="WaterFrameBuffers.cpp" />
+    <ClCompile Include="WaterGenerator.cpp" />
     <ClCompile Include="WaterRenderer.cpp" />
     <ClCompile Include="WaterShader.cpp" />
     <ClCompile Include="WaterTile.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="TexturedModel.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="WaterFrameBuffers.h" />
+    <ClInclude Include="WaterGenerator.h" />
     <ClInclude Include="WaterRenderer.h" />
     <ClInclude Include="WaterShader.h" />
     <ClInclude Include="WaterTile.h" />

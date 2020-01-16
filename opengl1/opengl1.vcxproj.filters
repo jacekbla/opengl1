@@ -132,6 +132,9 @@
     <ClCompile Include="Tess.cpp">
       <Filter>Source Files\tesselation</Filter>
     </ClCompile>
+    <ClCompile Include="WaterGenerator.cpp">
+      <Filter>Source Files\water</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DisplayManager.h">
@@ -196,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="Tess.h">
       <Filter>Header Files\tesselation</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterGenerator.h">
+      <Filter>Header Files\water</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

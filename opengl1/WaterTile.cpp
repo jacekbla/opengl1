@@ -1,6 +1,6 @@
 #include "WaterTile.h"
 
-const float WaterTile::TILE_SIZE = 5.0f;
+const float WaterTile::TILE_SIZE = 0.5f;// 0.1f
 
 WaterTile::~WaterTile()
 {
@@ -19,4 +19,14 @@ float WaterTile::getX() const
 float WaterTile::getZ() const
 {
 	return _z;
+}
+
+int WaterTile::getVertexCount() const
+{
+	return _quad.getVertexCount();
+}
+
+int WaterTile::getVaoID() const
+{
+	return _quad.getVaoID();
 }

@@ -10,22 +10,32 @@
 #include "Light.h"
 #include "MasterRenderer.h"
 
-#include "WaterShader.h"
-#include "WaterRenderer.h"
+//#include "WaterShader.h"
+//#include "WaterRenderer.h"
 #include "WaterTile.h"
 #include "WaterFrameBuffers.h"
+#include "WaterGenerator.h"
 
 #include "Tess.h"
+
+bool seeTessEdges = false;
 
 void keyboard(unsigned char p_key, int p_x, int p_y)
 {
 	switch (p_key)
 	{
-	case 033:
-	case 'q':
-	case 'Q':
-		exit(EXIT_SUCCESS);
-		break;
+		case 033:
+		case 'q':
+		case 'Q':
+		{
+			exit(EXIT_SUCCESS);
+			break;
+		}
+		case 't':
+		{
+			seeTessEdges = !seeTessEdges;
+			break;
+		}
 	}
 }
 
@@ -51,9 +61,9 @@ Camera* camera;
 Light* light;
 MasterRenderer* masterRenderer;
 
-std::vector<WaterTile>* waterTile;
-WaterRenderer* waterRenderer;
-WaterShader* waterShader;
+WaterTile* waterTile;
+//WaterRenderer* waterRenderer;
+//WaterShader* waterShader;
 WaterFrameBuffers* fbos;
 
 Tess* tess;
@@ -68,7 +78,7 @@ void display(void)
 
 	//render reflection texture to fbo
 	fbos->bindReflectionFrameBuffer();
-	float distance = 2 * (camera->getPosition().y - waterTile->at(0).getHeight());
+	float distance = 2 * (camera->getPosition().y - waterTile->getHeight());
 	float originalCameraY = camera->getPosition().y;
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY - distance, camera->getPosition().z));
 	camera->invertPitch();
@@ -76,7 +86,7 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight() + 0.5f));
+	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->getHeight() + 0.5f));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
 	camera->invertPitch();
 	fbos->unbindCurrentFrameBuffer();
@@ -87,7 +97,7 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight() + 0.5f));
+	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->getHeight() + 0.5f));
 
 
 	//render to screen
@@ -98,9 +108,9 @@ void display(void)
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, -1.0f));
-	waterRenderer->render(*waterTile, *camera);
+	//waterRenderer->render(*waterTile, *camera);
 
-	tess->render(*camera);
+	tess->render(*camera, *light, seeTessEdges);
 
 	DisplayManager::updateDisplay();
 }
@@ -150,11 +160,11 @@ int main(int argc, char **argv)
 
 	//water
 	fbos = new WaterFrameBuffers();
-	waterShader = new WaterShader();
-	waterRenderer = new WaterRenderer(loader, *waterShader, renderer->getProjectionMatrix(), *fbos);
-	waterTile = new std::vector<WaterTile>({ WaterTile(0.0f, -7.0f, -2.5f) });
+	//waterShader = new WaterShader();
+	//waterRenderer = new WaterRenderer(loader, *waterShader, renderer->getProjectionMatrix(), *fbos);
+	waterTile = &WaterGenerator::generate(20, -5.0f, -2.5f, -12.0f, loader);// 10 -> 100 and in WaterTile.cpp tilesize -> 0.1f
 
-	tess = new Tess(loader, renderer->getProjectionMatrix());
+	tess = new Tess(loader, renderer->getProjectionMatrix(), *waterTile, *fbos);
 
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
@@ -163,7 +173,7 @@ int main(int argc, char **argv)
 
 
 	fbos->cleanUp();
-	waterShader->cleanUp();
+	//waterShader->cleanUp();
 	masterRenderer->cleanUp();
 	loader.cleanUp();
 
@@ -183,8 +193,8 @@ int main(int argc, char **argv)
 	delete renderer;
 	delete masterRenderer;
 	delete waterTile;
-	delete waterShader;
-	delete waterRenderer;
+	//delete waterShader;
+	//delete waterRenderer;
 	delete fbos;
 
 	delete tess;

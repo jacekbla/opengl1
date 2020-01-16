@@ -1,6 +1,10 @@
 #include "tess.h"
 
-Tess::Tess(Loader p_loader, glm::mat4 p_projMatrix)
+const char* Tess::_DUDV_MAP = "res/dudv/dudv_water_map4.bmp";
+const float Tess::_WAVE_SPEED = 0.01f;
+const float Tess::_HEIGHT = 0.02f;
+
+Tess::Tess(Loader p_loader, glm::mat4 p_projMatrix, WaterTile& p_quad, WaterFrameBuffers p_fbos)
 {
 	_FILE_VS = "1_vs.GLSL";
 	_FILE_TC = "2_tc.GLSL";
@@ -12,32 +16,121 @@ Tess::Tess(Loader p_loader, glm::mat4 p_projMatrix)
 	_square_z = -7.0f;
 	_square_y = -1.0f;
 	_square_scale = 5.0f;
-
 	createRawModel(p_loader);
+
+
+	_water = p_quad;
+	_fbos = p_fbos;
+
+	_dudvTexture = p_loader.loadTexture(_DUDV_MAP);
+	_moveFactor = 0.0f;
 
 	createProgram();
 
+	enableShader();
+
 	glFuncs::ref().glBindAttribLocation(h_program, 0, "position");
+	glFuncs::ref().glBindAttribLocation(h_program, 1, "indicators");
 
 	_location_projMatrix = glFuncs::ref().glGetUniformLocation(h_program, "projMatrix");
 	_location_viewMatrix = glFuncs::ref().glGetUniformLocation(h_program, "viewMatrix");
 	_location_modelMatrix = glFuncs::ref().glGetUniformLocation(h_program, "modelMatrix");
 
-	enableShader();
+	_location_reflectionTexture = glFuncs::ref().glGetUniformLocation(h_program, "reflectionTexture");
+	_location_refractionTexture = glFuncs::ref().glGetUniformLocation(h_program, "refractionTexture");
+	_location_dudvMap = glFuncs::ref().glGetUniformLocation(h_program, "dudvMap");
+	_location_moveFactor = glFuncs::ref().glGetUniformLocation(h_program, "moveFactor");
+	_location_cameraPosition = glFuncs::ref().glGetUniformLocation(h_program, "cameraPosition");
+	_location_depthMap = glFuncs::ref().glGetUniformLocation(h_program, "depthMap");
+	_location_height = glFuncs::ref().glGetUniformLocation(h_program, "height");
+	_location_waveTime = glFuncs::ref().glGetUniformLocation(h_program, "waveTime");
+	_location_lightPosition = glFuncs::ref().glGetUniformLocation(h_program, "lightPosition");
+	_location_lightColour = glFuncs::ref().glGetUniformLocation(h_program, "lightColour");
 
-	glm::mat4 modelMatrix = Maths::createTransformMatrix(glm::fvec3(_square_x, _square_y, _square_z), 0.0f, 0.0f, 0.0f, _square_scale);
+	loadInt(_location_reflectionTexture, 0);
+	loadInt(_location_refractionTexture, 1);
+	loadInt(_location_dudvMap, 2);
+	loadInt(_location_depthMap, 3);
+
+	glm::mat4 modelMatrix = Maths::createTransformMatrix(glm::fvec3(_water.getX(), _water.getHeight(), _water.getZ()), 0.0f, 0.0f, 0.0f, WaterTile::TILE_SIZE);
 	loadMatrix(_location_modelMatrix, modelMatrix);
 
 	loadMatrix(_location_projMatrix, p_projMatrix);
 
 	disableShader();
-	// ? bindAttributes();
-	// ? getAllUniformLocations();
-
 }
 
-Tess::~Tess()
+Tess::~Tess(){}
+
+void Tess::render(Camera& p_camera, Light &p_light, bool seeTessEdges)
 {
+	enableShader();
+
+	beforeRender(p_camera, p_light);
+
+	if (seeTessEdges)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+
+	//glDrawArrays(GL_TRIANGLES, 0, _square_rawModel.getVertexCount());
+	//glDrawArrays(GL_PATCHES, 0, _water.getVertexCount());
+	//glDrawArrays(GL_TRIANGLES, 0, _water.getVertexCount());
+
+	glDrawArrays(GL_PATCHES, 0, _water.getVertexCount());
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	afterRender();
+
+	disableShader();
+}
+
+void Tess::beforeRender(Camera & p_camera, Light & p_light)
+{
+	glFuncs::ref().glBindVertexArray(_water.getVaoID());
+	glFuncs::ref().glEnableVertexAttribArray(0);
+	glFuncs::ref().glEnableVertexAttribArray(1);
+
+	_waveTime += _WAVE_SPEED;
+	loadFloat(_location_waveTime, _waveTime);
+
+	_moveFactor += _WAVE_SPEED * DisplayManager::getFrameTimeSeconds().count();
+	_moveFactor = _moveFactor - floor(_moveFactor);
+	loadFloat(_location_moveFactor, _moveFactor);
+
+	loadFloat(_location_height, _HEIGHT);
+
+	loadVec3(_location_lightPosition, p_light.getPostion());
+	loadVec3(_location_lightColour, p_light.getColor());
+
+	glm::mat4 viewMatrix = Maths::createViewMatrix(p_camera);
+	loadMatrix(_location_viewMatrix, viewMatrix);
+
+	glFuncs::ref().glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _fbos.getReflectionTexture());
+	glFuncs::ref().glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, _fbos.getRefractionTexture());
+	glFuncs::ref().glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, _dudvTexture);
+	glFuncs::ref().glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, _fbos.getRefractionDepthTexture());
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void Tess::afterRender()
+{
+	glDisable(GL_BLEND);
+	glFuncs::ref().glDisableVertexAttribArray(0);
+	glFuncs::ref().glDisableVertexAttribArray(1);
+	glFuncs::ref().glBindVertexArray(0);
+
 
 }
 
@@ -70,28 +163,7 @@ void Tess::cleanUp()
 	glFuncs::ref().glDeleteProgram(h_program);
 }
 
-void Tess::render(Camera& p_camera)
-{
-	enableShader();
 
-	glFuncs::ref().glBindVertexArray(_square_rawModel.getVaoID());
-	glFuncs::ref().glEnableVertexAttribArray(0);
-
-	glm::mat4 viewMatrix = Maths::createViewMatrix(p_camera);
-	loadMatrix(_location_viewMatrix, viewMatrix);
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	//glDrawArrays(GL_TRIANGLES, 0, _square_rawModel.getVertexCount());
-	glDrawArrays(GL_PATCHES, 0, _square_rawModel.getVertexCount());
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	glFuncs::ref().glDisableVertexAttribArray(0);
-	glFuncs::ref().glBindVertexArray(0);
-
-	disableShader();
-}
 
 void Tess::createRawModel(Loader p_loader)
 {
@@ -162,4 +234,19 @@ void Tess::createProgram()
 void Tess::loadMatrix(int p_location, glm::mat4 &p_matrix)
 {
 	glFuncs::ref().glUniformMatrix4fv(p_location, 1, GL_FALSE, &p_matrix[0][0]);
+}
+
+void Tess::loadVec3(int p_location, glm::vec3 &p_value)
+{
+	glFuncs::ref().glUniform3f(p_location, p_value.x, p_value.y, p_value.z);
+}
+
+void Tess::loadFloat(int p_location, float p_value)
+{
+	glFuncs::ref().glUniform1f(p_location, p_value);
+}
+
+void Tess::loadInt(int p_location, int p_value)
+{
+	glFuncs::ref().glUniform1i(p_location, p_value);
 }

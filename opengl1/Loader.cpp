@@ -71,12 +71,22 @@ RawModel Loader::loadToVAO(std::vector<float> p_positions, std::vector<float> p_
 	return RawModel(vaoID, p_indices.size());
 }
 
-RawModel Loader::loadToVAO(std::vector<float> p_positions, int p_dimensions) 
+RawModel Loader::loadToVAO(std::vector<float> p_positions, int p_dimensions)
 {
 	int vaoID = createVAO();
 	storeDataInAtrributeList(0, p_dimensions, p_positions);
 	unbindVAO();
 	return RawModel(vaoID, p_positions.size() / p_dimensions);
+}
+
+RawModel Loader::loadWaterToVAO(std::vector<float> p_positions, std::vector<float> p_indicators)
+{
+	int vaoID = createVAO();
+	storeDataInAtrributeList(0, 2, p_positions);
+	storeDataInAtrributeList(1, 4, p_indicators);
+	unbindVAO();
+
+	return RawModel(vaoID, p_positions.size() / 2);
 }
 
 void Loader::cleanUp()
@@ -95,7 +105,7 @@ GLuint Loader::loadTexture(std::string p_fileName)
 	_textures.push_back(texID);
 
 	glBindTexture(GL_TEXTURE_2D, texID);
-	
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -112,7 +122,7 @@ int Loader::createVAO()
 	glFuncs::ref().glGenVertexArrays(1, &vaoID);
 	_vaos.push_back(vaoID);
 	glFuncs::ref().glBindVertexArray(vaoID);
-	
+
 	return vaoID;
 }
 
@@ -124,6 +134,17 @@ void Loader::storeDataInAtrributeList(int p_attributeNumber, int p_coordinateSiz
 	glFuncs::ref().glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glFuncs::ref().glBufferData(GL_ARRAY_BUFFER, p_data.size() * sizeof(float), p_data.data(), GL_STATIC_DRAW);
 	glFuncs::ref().glVertexAttribPointer(p_attributeNumber, p_coordinateSize, GL_FLOAT, GL_FALSE, 0, NULL);
+	glFuncs::ref().glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Loader::storeIntDataInAtrributeList(int p_attributeNumber, int p_coordinateSize, std::vector<int> p_data)
+{
+	GLuint vbo;
+	glFuncs::ref().glGenBuffers(1, &vbo);
+	_vbos.push_back(vbo);
+	glFuncs::ref().glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glFuncs::ref().glBufferData(GL_ARRAY_BUFFER, p_data.size() * sizeof(int), p_data.data(), GL_STATIC_DRAW);
+	glFuncs::ref().glVertexAttribPointer(p_attributeNumber, p_coordinateSize, GL_INT, GL_FALSE, 0, NULL);
 	glFuncs::ref().glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
