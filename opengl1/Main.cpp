@@ -101,7 +101,7 @@ void display(void)
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, -1.0f));
-	waterRenderer->render(*camera);
+	waterRenderer->render(*camera, *light);
 
 	DisplayManager::updateDisplay();
 }

@@ -6,6 +6,7 @@
 #include "Maths.h"
 #include "WaterFrameBuffers.h"
 #include "DisplayManager.h"
+#include "Light.h"
 
 #ifndef WATER_RENDERER_H
 #define WATER_RENDERER_H
@@ -17,7 +18,7 @@ public:
 	explicit WaterRenderer(Loader p_loader, WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos, WaterTile& p_quad);
 	~WaterRenderer();
 
-	void render(Camera &p_camera);
+	void render(Camera &p_camera, Light &p_light);
 
 private:
 	static const char* _DUDV_MAP;
@@ -31,9 +32,10 @@ private:
 	float _waveTime = 0.0f;
 	int _dudvTexture;
 
-	void prepare(Camera &p_camera);
+	void prepare(Camera &p_camera, Light &p_light);
 	void unbind();
-	void updateTime();
+	void updateTime(); 
+	void loadLightVariables(Light p_light);
 	//void setUpVAO(Loader p_loader);
 };
 

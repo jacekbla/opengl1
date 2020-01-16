@@ -5,6 +5,8 @@ in vec4 clipSpaceGrid;
 in vec2 textureCoords;
 in vec3 toCameraVector;
 in vec3 normal;
+in vec3 specular;
+in vec3 diffuse;
 
 out vec4 out_Color;
 
@@ -22,7 +24,7 @@ const float fresnelReflective = 0.5;
 float calculateFresnel()
 {
 	vec3 viewVector = normalize(toCameraVector);
-	float refractiveFactor = dot(viewVector, vec3(0,1,0));
+	float refractiveFactor = dot(viewVector, normalize(normal));
 	refractiveFactor = pow(refractiveFactor, fresnelReflective);
 	return clamp(refractiveFactor, 0.0, 1.0);
 }
@@ -61,6 +63,7 @@ void main(void)
 	vec4 refractColor = texture(refractionTexture, refractTexCoords);
 
 	out_Color = mix(reflectColor, refractColor, calculateFresnel());
+    out_Color = out_Color * vec4(diffuse, 1.0) + vec4(specular, 0.0);
 	out_Color = mix(out_Color, vec4(0.0, 0.3, 0.5, 1.0), 0.2);
 	out_Color.a = clamp(waterDepth/waterBlendDepth, 0.0, 1.0);
 }

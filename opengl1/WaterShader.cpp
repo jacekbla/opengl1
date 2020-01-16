@@ -26,6 +26,8 @@ void WaterShader::getAllUniformLocations()
 	_location_depthMap = ShaderProgram::getUniformLocation("depthMap");
 	_location_height = ShaderProgram::getUniformLocation("height");
 	_location_waveTime = ShaderProgram::getUniformLocation("waveTime");
+	_location_lightPosition = ShaderProgram::getUniformLocation("lightPosition");
+	_location_lightColour = ShaderProgram::getUniformLocation("lightColour");
 }
 
 void WaterShader::connectTextureUnits()
@@ -68,3 +70,15 @@ void WaterShader::loadWaveTime(float p_waveTime)
 {
 	ShaderProgram::loadFloat(_location_waveTime, p_waveTime);
 }
+
+void WaterShader::loadLightPosition(glm::fvec3 p_lightPosition)
+{
+	ShaderProgram::loadVector(_location_lightPosition, p_lightPosition);
+}
+
+void WaterShader::loadLightColour(glm::fvec3 p_lightColout)
+{
+	ShaderProgram::loadVector(_location_lightColour, p_lightColout);
+}
+
+

@@ -29,6 +29,6 @@ void main()
 	vTexCoordsFrag = vTexCoords;
 
 	vSurfaceNormal = (transformMatrix * vec4(vNormal, 0.0)).xyz;
-	vToLightVector = lightPosition - worldPosition.xyz ;					//?
+	vToLightVector = lightPosition - worldPosition.xyz;					//?
 	vToCameraVector = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
 }

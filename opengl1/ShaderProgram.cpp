@@ -128,6 +128,11 @@ void ShaderProgram::loadVector(int p_location, glm::vec4 &p_value)
 	glFuncs::ref().glUniform4f(p_location, p_value.x, p_value.y, p_value.z, p_value.w);
 }
 
+void ShaderProgram::loadVector(int p_location, glm::vec2 & p_value)
+{
+	glFuncs::ref().glUniform2f(p_location, p_value.x, p_value.y);
+}
+
 void ShaderProgram::loadBoolean(int p_location, bool p_value)
 {
 	glFuncs::ref().glUniform1f(p_location, p_value ? 1.0f : 0.0f);

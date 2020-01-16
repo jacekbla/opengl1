@@ -23,9 +23,9 @@ WaterRenderer::~WaterRenderer()
 {
 }
 
-void WaterRenderer::render(Camera & p_camera)
+void WaterRenderer::render(Camera & p_camera, Light &p_light)
 {
-	prepare(p_camera);
+	prepare(p_camera, p_light);
 
 	glm::mat4 modelMatrix = Maths::createTransformMatrix(glm::fvec3(_quad.getX(), _quad.getHeight(), _quad.getZ()), 0.0f, 0.0f, 0.0f, WaterTile::TILE_SIZE);
 	_shader.loadModelMatrix(modelMatrix);
@@ -35,7 +35,7 @@ void WaterRenderer::render(Camera & p_camera)
 	unbind();
 }
 
-void WaterRenderer::prepare(Camera & p_camera)
+void WaterRenderer::prepare(Camera & p_camera, Light &p_light)
 {
 	_shader.start();
 	updateTime();
@@ -44,6 +44,7 @@ void WaterRenderer::prepare(Camera & p_camera)
 	_moveFactor = _moveFactor - floor(_moveFactor);
 	_shader.loadMoveFactor(_moveFactor);
 	_shader.loadHeight(_HEIGHT);
+	loadLightVariables(p_light);
 	glFuncs::ref().glBindVertexArray(_quad.getVaoID());
 	glFuncs::ref().glEnableVertexAttribArray(0);
 	glFuncs::ref().glEnableVertexAttribArray(1);
@@ -73,6 +74,12 @@ void WaterRenderer::updateTime()
 {
 	_waveTime += _WAVE_SPEED;
 	_shader.loadWaveTime(_waveTime);
+}
+
+void WaterRenderer::loadLightVariables(Light p_light)
+{
+	_shader.loadLightPosition(p_light.getPostion());
+	_shader.loadLightColour(p_light.getColor());
 }
 
 //void WaterRenderer::setUpVAO(Loader p_loader)

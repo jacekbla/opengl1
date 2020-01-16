@@ -55,6 +55,7 @@ public:
 	PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer;
 	PFNGLUNIFORM4FPROC glUniform4f;
 	PFNGLUNIFORM1IPROC glUniform1i;
+	PFNGLUNIFORM2FPROC glUniform2f;
 
 private:
 	glFuncs();

@@ -72,5 +72,6 @@ void glFuncs::init()
 		glFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)wglGetProcAddress("glFramebufferRenderbuffer");
 		glUniform4f = (PFNGLUNIFORM4FPROC)wglGetProcAddress("glUniform4f");
 		glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
+		glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");
 	}
 }

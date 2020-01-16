@@ -27,6 +27,8 @@ public:
 	void loadMoveFactor(float p_factor); 
 	void loadHeight(float p_height);
 	void loadWaveTime(float p_waveTime);
+	void loadLightPosition(glm::fvec3 p_lightPosition);
+	void loadLightColour(glm::fvec3 p_lightColour);
 
 private:
 	static const char* _VERTEX_FILE;
@@ -43,6 +45,8 @@ private:
 	int _location_depthMap;
 	int _location_height;
 	int _location_waveTime;
+	int _location_lightPosition;
+	int _location_lightColour;
 };
 
 

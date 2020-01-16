@@ -8,6 +8,8 @@ out vec4 clipSpaceGrid;
 out vec2 textureCoords;
 out vec3 toCameraVector;
 out vec3 normal;
+out vec3 specular;
+out vec3 diffuse;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -15,12 +17,18 @@ uniform mat4 modelMatrix;
 uniform vec3 cameraPosition;
 uniform float height;
 uniform float waveTime;
+uniform vec3 lightPosition;
+uniform vec3 lightColour;
 
 const float tiling = 0.05;
 const float PI = 3.1415926535897932384626433832795;
 
 const float waveLength = 10.0;
 const float waveAmplitude = 0.5;
+
+const float specularReflectivity = 0.4;
+const float shineDamper = 20.0;
+const vec2 lightBias = vec2(0.5, 0.9);
 
 float generateOffset(float x, float z)
 {
@@ -44,6 +52,21 @@ vec3 calcNormal(vec3 vertex0, vec3 vertex1, vec3 vertex2)
 	return normalize(cross(tangent, bitangent));
 }
 
+vec3 calcSpecularLighting(vec3 toCamVector, vec3 toLightVector, vec3 normal)
+{
+	vec3 reflectedLightDirection = reflect(-toLightVector, normal);
+	float specularFactor = dot(reflectedLightDirection, toCamVector);
+	specularFactor = max(specularFactor,0.0);
+	specularFactor = pow(specularFactor, shineDamper);
+	return specularFactor * specularReflectivity * lightColour;
+}
+
+vec3 calculateDiffuseLighting(vec3 toLightVector, vec3 normal)
+{
+	float brightness = max(dot(toLightVector, normal), 0.0);
+	return (lightColour * lightBias.x) + (brightness * lightColour * lightBias.y);
+}
+
 void main(void) 
 {
 	vec3 currentVertex = vec3(vPosition.x, height, vPosition.y);
@@ -65,5 +88,8 @@ void main(void)
 
 	textureCoords = vec2(vPosition.x/2.0 + 0.5, vPosition.y/2.0 + 0.5) * tiling;
 
-	toCameraVector = cameraPosition - worldPosition.xyz;
+	toCameraVector = normalize(cameraPosition - worldPosition.xyz);
+	vec3 toLightVector = normalize(lightPosition - worldPosition.xyz);
+	specular = calcSpecularLighting(toCameraVector, toLightVector, normal);
+	diffuse = calculateDiffuseLighting(toLightVector, normal);
 }

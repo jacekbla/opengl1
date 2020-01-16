@@ -31,6 +31,7 @@ protected:
 	void loadFloat(int p_location, float p_value);
 	void loadVector(int p_location, glm::vec3 &p_value);
 	void loadVector(int p_location, glm::vec4 &p_value);
+	void loadVector(int p_location, glm::vec2 &p_value);
 	void loadBoolean(int p_location, bool p_value);
 	void loadMatrix(int p_location, glm::mat4 &p_matrix);
 };
