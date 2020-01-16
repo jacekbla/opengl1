@@ -5,7 +5,6 @@ layout(location = 1) in vec4 vIndicators;
 
 out vec4 clipSpace;
 out vec4 clipSpaceGrid;
-out vec2 textureCoords;
 out vec3 toCameraVector;
 out vec3 toLightVector;
 out vec3 surfaceNormal;
@@ -128,8 +127,6 @@ void main(void)
 	worldPosition = modelMatrix * vec4(currentVertex, 1.0);
 	clipSpace = projectionMatrix * viewMatrix * worldPosition;
 	gl_Position = clipSpace;
-
-	textureCoords = vec2(vPosition.x/2.0 + 0.5, vPosition.y/2.0 + 0.5) * tiling;
 
 	toCameraVector = normalize(cameraPosition - worldPosition.xyz);
 	toLightVector = normalize(lightPosition - worldPosition.xyz);

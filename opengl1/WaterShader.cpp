@@ -20,8 +20,6 @@ void WaterShader::getAllUniformLocations()
 	_location_modelMatrix = ShaderProgram::getUniformLocation("modelMatrix");
 	_location_reflectionTexture = ShaderProgram::getUniformLocation("reflectionTexture");
 	_location_refractionTexture = ShaderProgram::getUniformLocation("refractionTexture");
-	_location_dudvMap = ShaderProgram::getUniformLocation("dudvMap");
-	_location_moveFactor = ShaderProgram::getUniformLocation("moveFactor");
 	_location_cameraPosition = ShaderProgram::getUniformLocation("cameraPosition");
 	_location_depthMap = ShaderProgram::getUniformLocation("depthMap");
 	_location_height = ShaderProgram::getUniformLocation("height");
@@ -34,7 +32,6 @@ void WaterShader::connectTextureUnits()
 {
 	ShaderProgram::loadInt(_location_reflectionTexture, 0);
 	ShaderProgram::loadInt(_location_refractionTexture, 1);
-	ShaderProgram::loadInt(_location_dudvMap, 2);
 	ShaderProgram::loadInt(_location_depthMap, 3);
 }
 
@@ -54,11 +51,6 @@ void WaterShader::loadViewMatrix(Camera &p_camera)
 void WaterShader::loadModelMatrix(glm::mat4 &p_matrix)
 {
 	ShaderProgram::loadMatrix(_location_modelMatrix, p_matrix);
-}
-
-void WaterShader::loadMoveFactor(float p_factor)
-{
-	ShaderProgram::loadFloat(_location_moveFactor, p_factor);
 }
 
 void WaterShader::loadHeight(float p_height)

@@ -2,7 +2,6 @@
 
 in vec4 clipSpace;
 in vec4 clipSpaceGrid;
-in vec2 textureCoords;
 in vec3 toCameraVector;
 in vec3 toLightVector;
 in vec3 surfaceNormal;
@@ -14,10 +13,7 @@ out vec4 out_Color;
 
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
-uniform sampler2D dudvMap;
 uniform sampler2D depthMap;
-
-uniform float moveFactor;
 
 const float waveStrength = 0.01;
 const float waterBlendDepth = 0.25;
@@ -49,13 +45,6 @@ void main(void)
 	depth = gl_FragCoord.z;
 	float waterDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
 	float waterDepth = floorDistance - waterDistance;
-	
-	vec2 distorion1 = (texture(dudvMap, vec2(textureCoords.x + moveFactor, textureCoords.y)).rg * 2.0 - 1.0) * waveStrength;
-	vec2 distorion2 = (texture(dudvMap, vec2(-textureCoords.x + moveFactor, textureCoords.y + moveFactor)).rg * 2.0 - 1.0) * waveStrength;
-	vec2 totalDistortion = (distorion1 + distorion2) * clamp(waterDepth/(waterBlendDepth * 4), 0.0, 1.0);
-	
-	//reflectTexCoords += totalDistortion;
-	//refractTexCoords += totalDistortion;
 	
 	refractTexCoords = clamp(refractTexCoords, 0.001, 0.999);
 	reflectTexCoords.x = clamp(reflectTexCoords.x, 0.001, 0.999);

@@ -154,7 +154,7 @@ int main(int argc, char **argv)
 
 	fbos = new WaterFrameBuffers();
 	waterShader = new WaterShader();
-	waterRenderer = new WaterRenderer(loader, *waterShader, renderer->getProjectionMatrix(), *fbos, *waterTile);
+	waterRenderer = new WaterRenderer(*waterShader, renderer->getProjectionMatrix(), *fbos, *waterTile);
 
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
