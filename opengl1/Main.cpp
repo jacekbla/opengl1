@@ -24,6 +24,12 @@ void keyboard(unsigned char p_key, int p_x, int p_y)
 	case 'Q':
 		exit(EXIT_SUCCESS);
 		break;
+	case '1':
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+	case '2':
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
 	}
 }
 
@@ -76,22 +82,22 @@ glm::fvec3 rotatePoint(glm::fvec3 point, glm::fvec3  center, float angleDeg) {
 void changeLight() {
 	glm::fvec3 lightRed(0.62, 0.38, 0);
 	glm::fvec3 lightBlue(0.45f, 0.65f, 0.95f);
-	glm::fvec3 lightWhite(1.0f, 1.0f, 1.0f);
+	glm::fvec3 lightBlack(1.0f, 1.0f, 1.0f);
 
 	float angle = angleDiff * (PI / 180.0);
 	sunAngle += angle;
 
 	if (sunAngle > 1.5707963268 && sunAngle < 4.7123889804) {
 		lightBlue = glm::vec3(0.0f, 0.0f, 0.0f);
-		lightWhite = glm::vec3(0.0f, 0.0f, 0.0f);
+		lightBlack = glm::vec3(0.2f, 0.2f, 0.2f);
 	}
 
 	
 	lightRed = glm::fvec3(lightRed.x * glm::sin(sunAngle)* glm::sin(sunAngle), lightRed.y * glm::sin(sunAngle)* glm::sin(sunAngle), lightRed.z * glm::sin(sunAngle)* glm::sin(sunAngle));
-	lightWhite = glm::fvec3(lightWhite.x * glm::cos(sunAngle)* glm::cos(sunAngle), lightWhite.y * glm::cos(sunAngle)* glm::cos(sunAngle), lightWhite.z * glm::cos(sunAngle)* glm::cos(sunAngle));
+	lightBlack = glm::fvec3(lightBlack.x * glm::cos(sunAngle)* glm::cos(sunAngle), lightBlack.y * glm::cos(sunAngle)* glm::cos(sunAngle), lightBlack.z * glm::cos(sunAngle)* glm::cos(sunAngle));
 	lightBlue = glm::fvec3(lightBlue.x * glm::cos(sunAngle) * glm::cos(sunAngle), lightBlue.y * glm::cos(sunAngle) * glm::cos(sunAngle), lightBlue.z * glm::cos(sunAngle) * glm::cos(sunAngle));
 
-	glm::fvec3 lightColor = glm::fvec3(lightRed.x + lightWhite.x, lightRed.y + lightWhite.y, lightRed.z + lightWhite.z);
+	glm::fvec3 lightColor = glm::fvec3(lightRed.x + lightBlack.x, lightRed.y + lightBlack.y, lightRed.z + lightBlack.z);
 	glm::fvec3 skyColor = glm::fvec3(lightRed.x + lightBlue.x, lightRed.y + lightBlue.y, lightRed.z + lightBlue.z);
 
 	if (sunAngle > 6.2831853072) {
@@ -125,23 +131,23 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight()));
+	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight() + 0.5f));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
 	camera->invertPitch();
 	fbos->unbindCurrentFrameBuffer();
 
+	//render refraction texture to fbo
 	fbos->bindRefractionFrameBuffer();
 	masterRenderer->processEntity(*terrain);
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight()));
+	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight() + 0.5f));
 
 
+	//render to screen
 	glDisable(GL_CLIP_DISTANCE0);
 	fbos->unbindCurrentFrameBuffer();
-
-
 	masterRenderer->processEntity(*terrain);
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
@@ -151,8 +157,6 @@ void display(void)
 
 	DisplayManager::updateDisplay();
 }
-
-
 
 int main(int argc, char **argv)
 {
@@ -190,23 +194,24 @@ int main(int argc, char **argv)
 	terrain = new Entity(*texturedModel_terrain, glm::vec3(0.0f, -3.0f, -7.0f), 0.0f, 0.0f, 0.0f, 1.0f);
 	tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 40.0f, 0.0f, 1.0f);
 	tree2 = new Entity(*texturedModel_tree2, glm::vec3(1.4f, -1.9f, -13.0f), 0.0f, 150.0f, 0.0f, 1.3f);
-	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -12.0f), 5.0f, 225.0f, 0.0f, 0.3f);
-	light = new Light(glm::vec3(0.0f, 10.0f, -8.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.4f, 0.6f, 0.9f));
+	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
+	light = new Light(glm::vec3(-10.0f, 10.0f, 5.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.9f, 0.9f, 0.9f));
 	camera = new Camera(2.0f, 0.0f, 0.0f);
 	renderer = new Renderer(*shader);
+	
 	masterRenderer = new MasterRenderer();
-	//center
-	//(0.0f, 0.0f, -7.0f)
+
 	//water
 	fbos = new WaterFrameBuffers();
 	waterShader = new WaterShader();
 	waterRenderer = new WaterRenderer(loader, *waterShader, renderer->getProjectionMatrix(), *fbos);
-	waterTile = new std::vector<WaterTile>({ WaterTile(0.0f, -7.0f, -2.5f) });
+	waterTile = new std::vector<WaterTile>({ WaterTile(0.0f, -7.0f, -2.5f)});
 
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
 
-	glutMainLoop();	
+	glutMainLoop();
+
 
 	fbos->cleanUp();
 	waterShader->cleanUp();

@@ -22,6 +22,7 @@ void WaterShader::getAllUniformLocations()
 	_location_dudvMap = ShaderProgram::getUniformLocation("dudvMap");
 	_location_moveFactor = ShaderProgram::getUniformLocation("moveFactor");
 	_location_cameraPosition = ShaderProgram::getUniformLocation("cameraPosition");
+	_location_depthMap = ShaderProgram::getUniformLocation("depthMap");
 }
 
 void WaterShader::connectTextureUnits()
@@ -29,6 +30,7 @@ void WaterShader::connectTextureUnits()
 	ShaderProgram::loadInt(_location_reflectionTexture, 0);
 	ShaderProgram::loadInt(_location_refractionTexture, 1);
 	ShaderProgram::loadInt(_location_dudvMap, 2);
+	ShaderProgram::loadInt(_location_depthMap, 3);
 }
 
 void WaterShader::loadProjectionMatrix(glm::mat4 &p_matrix)
