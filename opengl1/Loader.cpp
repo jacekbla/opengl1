@@ -79,11 +79,11 @@ RawModel Loader::loadToVAO(std::vector<float> p_positions, int p_dimensions)
 	return RawModel(vaoID, p_positions.size() / p_dimensions);
 }
 
-RawModel Loader::loadWaterToVAO(std::vector<float> p_positions, std::vector<int> p_indicators)
+RawModel Loader::loadWaterToVAO(std::vector<float> p_positions, std::vector<float> p_indicators)
 {
 	int vaoID = createVAO();
 	storeDataInAtrributeList(0, 2, p_positions);
-	storeIntDataInAtrributeList(1, 4, p_indicators);
+	storeDataInAtrributeList(1, 4, p_indicators);
 	unbindVAO();
 
 	return RawModel(vaoID, p_positions.size() / 2);

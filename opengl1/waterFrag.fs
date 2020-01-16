@@ -1,8 +1,10 @@
 #version 430
 
 in vec4 clipSpace;
+in vec4 clipSpaceGrid;
 in vec2 textureCoords;
 in vec3 toCameraVector;
+in vec3 normal;
 
 out vec4 out_Color;
 
@@ -15,16 +17,29 @@ uniform float moveFactor;
 
 const float waveStrength = 0.01;
 const float waterBlendDepth = 0.25;
+const float fresnelReflective = 0.5;
+
+float calculateFresnel()
+{
+	vec3 viewVector = normalize(toCameraVector);
+	float refractiveFactor = dot(viewVector, vec3(0,1,0));
+	refractiveFactor = pow(refractiveFactor, fresnelReflective);
+	return clamp(refractiveFactor, 0.0, 1.0);
+}
 
 void main(void) 
 {
 	vec2 ndc = (clipSpace.xy/clipSpace.w)/2.0 + 0.5;
-	vec2 refractTexCoords = vec2(ndc.x, ndc.y);
-	vec2 reflectTexCoords = vec2(ndc.x, -ndc.y);
+	vec2 refractTexCoordsReal = vec2(ndc.x, ndc.y);
+	vec2 reflectTexCoordsReal = vec2(ndc.x, -ndc.y);
+
+    vec2 ndcGrid = (clipSpaceGrid.xy/clipSpaceGrid.w)/2.0 + 0.5;
+	vec2 refractTexCoords = vec2(ndcGrid.x, ndcGrid.y);
+	vec2 reflectTexCoords = vec2(ndcGrid.x, -ndcGrid.y);
 
 	float near = 0.1;
-	float far = 1000.0f;
-	float depth = texture(depthMap, refractTexCoords).r;
+	float far = 1000.0;
+	float depth = texture(depthMap, refractTexCoordsReal).r;
 	float floorDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
 
 	depth = gl_FragCoord.z;
@@ -35,8 +50,8 @@ void main(void)
 	vec2 distorion2 = (texture(dudvMap, vec2(-textureCoords.x + moveFactor, textureCoords.y + moveFactor)).rg * 2.0 - 1.0) * waveStrength;
 	vec2 totalDistortion = (distorion1 + distorion2) * clamp(waterDepth/(waterBlendDepth * 4), 0.0, 1.0);
 	
-	reflectTexCoords += totalDistortion;
-	refractTexCoords += totalDistortion;
+	//reflectTexCoords += totalDistortion;
+	//refractTexCoords += totalDistortion;
 	
 	refractTexCoords = clamp(refractTexCoords, 0.001, 0.999);
 	reflectTexCoords.x = clamp(reflectTexCoords.x, 0.001, 0.999);
@@ -45,11 +60,7 @@ void main(void)
 	vec4 reflectColor = texture(reflectionTexture, reflectTexCoords);
 	vec4 refractColor = texture(refractionTexture, refractTexCoords);
 
-	vec3 viewVector = normalize(toCameraVector);
-	float refractiveFactor = dot(viewVector, vec3(0.0, 1.0, 0.0));
-	refractiveFactor = pow(refractiveFactor, 0.8);
-
-	out_Color = mix(reflectColor, refractColor, refractiveFactor);
+	out_Color = mix(reflectColor, refractColor, calculateFresnel());
 	out_Color = mix(out_Color, vec4(0.0, 0.3, 0.5, 1.0), 0.2);
 	out_Color.a = clamp(waterDepth/waterBlendDepth, 0.0, 1.0);
 }

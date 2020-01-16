@@ -10,6 +10,7 @@ WaterShader::~WaterShader()
 void WaterShader::bindAttributes()
 {
 	ShaderProgram::bindAttribute(0, "vPosition");
+	ShaderProgram::bindAttribute(1, "vIndicators");
 }
 
 void WaterShader::getAllUniformLocations()
@@ -23,6 +24,8 @@ void WaterShader::getAllUniformLocations()
 	_location_moveFactor = ShaderProgram::getUniformLocation("moveFactor");
 	_location_cameraPosition = ShaderProgram::getUniformLocation("cameraPosition");
 	_location_depthMap = ShaderProgram::getUniformLocation("depthMap");
+	_location_height = ShaderProgram::getUniformLocation("height");
+	_location_waveTime = ShaderProgram::getUniformLocation("waveTime");
 }
 
 void WaterShader::connectTextureUnits()
@@ -54,4 +57,14 @@ void WaterShader::loadModelMatrix(glm::mat4 &p_matrix)
 void WaterShader::loadMoveFactor(float p_factor)
 {
 	ShaderProgram::loadFloat(_location_moveFactor, p_factor);
+}
+
+void WaterShader::loadHeight(float p_height)
+{
+	ShaderProgram::loadFloat(_location_height, p_height);
+}
+
+void WaterShader::loadWaveTime(float p_waveTime)
+{
+	ShaderProgram::loadFloat(_location_waveTime, p_waveTime);
 }

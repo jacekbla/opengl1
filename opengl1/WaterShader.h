@@ -24,7 +24,9 @@ public:
 	void loadProjectionMatrix(glm::mat4 &p_matrix);
 	void loadViewMatrix(Camera &p_camera);
 	void loadModelMatrix(glm::mat4 &p_matrix);
-	void loadMoveFactor(float p_factor);
+	void loadMoveFactor(float p_factor); 
+	void loadHeight(float p_height);
+	void loadWaveTime(float p_waveTime);
 
 private:
 	static const char* _VERTEX_FILE;
@@ -39,6 +41,8 @@ private:
 	int _location_moveFactor;
 	int _location_cameraPosition;
 	int _location_depthMap;
+	int _location_height;
+	int _location_waveTime;
 };
 
 

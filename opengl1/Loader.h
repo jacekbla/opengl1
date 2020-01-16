@@ -12,7 +12,7 @@ public:
 
 	RawModel loadToVAO(std::vector<float> p_positions, std::vector<float> p_colors, std::vector<float> p_texCoords, std::vector<float> p_normals, std::vector<unsigned int> p_indices);
 	RawModel loadToVAO(std::vector<float> p_positions, int p_dimensions);
-	RawModel loadWaterToVAO(std::vector<float> p_positions, std::vector<int> p_indicators);
+	RawModel loadWaterToVAO(std::vector<float> p_positions, std::vector<float> p_indicators);
 	void cleanUp();
 	GLuint loadTexture(std::string p_fileName);
 

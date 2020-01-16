@@ -2,7 +2,8 @@
 
 
 const char* WaterRenderer::_DUDV_MAP = "res/dudv/dudv_water_map4.bmp";
-const float WaterRenderer::_WAVE_SPEED = 0.02f;
+const float WaterRenderer::_WAVE_SPEED = 0.01f;
+const float WaterRenderer::_HEIGHT = 0.02f;
 
 WaterRenderer::WaterRenderer(Loader p_loader, WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos, WaterTile& p_quad)
 {
@@ -14,7 +15,6 @@ WaterRenderer::WaterRenderer(Loader p_loader, WaterShader p_shader, glm::mat4 p_
 	_shader.connectTextureUnits();
 	_shader.loadProjectionMatrix(p_projMatrix);
 	_shader.stop();
-	//generate?
 	//setUpVAO(p_loader);
 	_moveFactor = 0.0f;
 }
@@ -27,10 +27,10 @@ void WaterRenderer::render(Camera & p_camera)
 {
 	prepare(p_camera);
 
-		glm::mat4 modelMatrix = Maths::createTransformMatrix(glm::fvec3(_quad.getX(), _quad.getHeight(), _quad.getZ()), 0.0f, 0.0f, 0.0f, WaterTile::TILE_SIZE);
-		_shader.loadModelMatrix(modelMatrix);
+	glm::mat4 modelMatrix = Maths::createTransformMatrix(glm::fvec3(_quad.getX(), _quad.getHeight(), _quad.getZ()), 0.0f, 0.0f, 0.0f, WaterTile::TILE_SIZE);
+	_shader.loadModelMatrix(modelMatrix);
 
-		glDrawArrays(GL_TRIANGLES, 0, _quad.getVertexCount());
+	glDrawArrays(GL_TRIANGLES, 0, _quad.getVertexCount());
 
 	unbind();
 }
@@ -38,12 +38,15 @@ void WaterRenderer::render(Camera & p_camera)
 void WaterRenderer::prepare(Camera & p_camera)
 {
 	_shader.start();
+	updateTime();
 	_shader.loadViewMatrix(p_camera);
 	_moveFactor += _WAVE_SPEED * DisplayManager::getFrameTimeSeconds().count();
 	_moveFactor = _moveFactor - floor(_moveFactor);
 	_shader.loadMoveFactor(_moveFactor);
+	_shader.loadHeight(_HEIGHT);
 	glFuncs::ref().glBindVertexArray(_quad.getVaoID());
 	glFuncs::ref().glEnableVertexAttribArray(0);
+	glFuncs::ref().glEnableVertexAttribArray(1);
 	glFuncs::ref().glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _fbos.getReflectionTexture());
 	glFuncs::ref().glActiveTexture(GL_TEXTURE1);
@@ -61,8 +64,15 @@ void WaterRenderer::unbind()
 {
 	glDisable(GL_BLEND);
 	glFuncs::ref().glDisableVertexAttribArray(0);
+	glFuncs::ref().glDisableVertexAttribArray(1);
 	glFuncs::ref().glBindVertexArray(0);
 	_shader.stop();
+}
+
+void WaterRenderer::updateTime()
+{
+	_waveTime += _WAVE_SPEED;
+	_shader.loadWaveTime(_waveTime);
 }
 
 //void WaterRenderer::setUpVAO(Loader p_loader)

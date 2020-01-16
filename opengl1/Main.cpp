@@ -150,7 +150,7 @@ int main(int argc, char **argv)
 	masterRenderer = new MasterRenderer();
 
 	//water
-	waterTile = &WaterGenerator::generate(2, -5.0f, -2.5f, -12.0f, loader);
+	waterTile = &WaterGenerator::generate(100, -5.0f, -2.5f, -12.0f, loader);
 
 	fbos = new WaterFrameBuffers();
 	waterShader = new WaterShader();

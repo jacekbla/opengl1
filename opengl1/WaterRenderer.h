@@ -22,15 +22,18 @@ public:
 private:
 	static const char* _DUDV_MAP;
 	static const float _WAVE_SPEED;
+	static const float _HEIGHT;
 
 	WaterTile _quad;
 	WaterShader _shader;
 	WaterFrameBuffers _fbos;
 	float _moveFactor = 0.0f;
+	float _waveTime = 0.0f;
 	int _dudvTexture;
 
 	void prepare(Camera &p_camera);
 	void unbind();
+	void updateTime();
 	//void setUpVAO(Loader p_loader);
 };
 

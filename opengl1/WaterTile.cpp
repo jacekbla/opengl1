@@ -1,6 +1,6 @@
 #include "WaterTile.h"
 
-const float WaterTile::TILE_SIZE = 5.0f;
+const float WaterTile::TILE_SIZE = 0.1f;
 
 WaterTile::~WaterTile()
 {
