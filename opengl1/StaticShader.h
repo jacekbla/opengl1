@@ -22,7 +22,7 @@ public:
 	void loadTransformMatrix(glm::mat4 &p_matrix);
 	void loadProjectionMatrix(glm::mat4 &p_matrix);
 	void loadViewMatrix(Camera &p_camera);
-	void loadLight(Light &p_light);
+	void loadLights(std::vector<Light*> &p_light);
 	void loadShineVariables(float p_damper, float p_reflectivity);
 	void loadClipPlane(glm::fvec4 p_plane);
 
@@ -31,12 +31,13 @@ public:
 private:
 	static const char* _VERTEX_FILE;
 	static const char* _FRAGMENT_FILE;
+	static const int _MAX_LIGHTS;
 	int _location_MVP;
 	int _location_transformMatrix;
 	int _location_projectionMatrix;
 	int _location_viewMatrix;
-	int _location_lightPosition;
-	int _location_lightColor;
+	int _location_lightPosition[4];
+	int _location_lightColor[4];
 	int _location_shineDamper;
 	int _location_reflectivity;
 	int _location_plane;

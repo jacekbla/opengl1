@@ -6,14 +6,14 @@ layout(location = 3) in vec3 vNormal;
 
 out vec2 vTexCoordsFrag;
 out vec3 vSurfaceNormal;
-out vec3 vToLightVector;
+out vec3 vToLightVector[4];
 out vec3 vToCameraVector;
 
 uniform mat4 MVP;
 uniform mat4 transformMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform vec3 lightPosition;
+uniform vec3 lightPosition[4];
 
 uniform vec4 plane;
 
@@ -28,6 +28,8 @@ gl_Position = projectionMatrix * viewMatrix * worldPosition;
 vTexCoordsFrag = vTexCoords;
 
 vSurfaceNormal = (transformMatrix * vec4(vNormal, 0.0)).xyz;
-vToLightVector = -(worldPosition.xyz - lightPosition);					
+for(int i=0; i<4; i++){
+	vToLightVector[i] = -(worldPosition.xyz - lightPosition[i]);	
+	}
 vToCameraVector = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
 }

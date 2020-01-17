@@ -53,6 +53,7 @@ Renderer* renderer;
 StaticShader* shader;
 Camera* camera;
 Light* light;
+std::vector<Light*>* lights;
 MasterRenderer* masterRenderer;
 
 std::vector<WaterTile>* waterTile;
@@ -131,7 +132,7 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight() + 0.5f));
+	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight() + 0.5f));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
 	camera->invertPitch();
 	fbos->unbindCurrentFrameBuffer();
@@ -142,7 +143,7 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight() + 0.5f));
+	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight() + 0.5f));
 
 
 	//render to screen
@@ -152,7 +153,7 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
-	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, 100.0f));
+	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, 100.0f));
 	waterRenderer->render(*waterTile, *camera);
 
 	DisplayManager::updateDisplay();
@@ -199,6 +200,12 @@ int main(int argc, char **argv)
 	camera = new Camera(2.0f, 0.0f, 0.0f);
 	renderer = new Renderer(*shader);
 	
+	lights = new std::vector<Light*>();
+	lights->push_back(light);
+
+	Light* light2 = new Light(glm::vec3(0.0f, -1.0f, -11.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.0f, 0.0f, 0.0f));
+	lights->push_back(light2);
+
 	masterRenderer = new MasterRenderer();
 
 	//water
@@ -217,8 +224,13 @@ int main(int argc, char **argv)
 	waterShader->cleanUp();
 	masterRenderer->cleanUp();
 	loader.cleanUp();
+	for (int i = 0; i < lights->size(); i++) {
+		delete& lights[i];
+	}
+
 	delete camera;
 	delete light;
+	delete light2;
 	delete terrain;
 	delete texturedModel_terrain;
 	delete elephant;

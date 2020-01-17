@@ -17,7 +17,7 @@ public:
 	~MasterRenderer();
 
 	void cleanUp();
-	void render(Light p_light, Camera p_camera, glm::fvec4 p_clipPlane);
+	void render(std::vector<Light*> p_light, Camera p_camera, glm::fvec4 p_clipPlane);
 	void processEntity(Entity p_entity);
 
 	glm::mat4 getProjectionMatrix();

@@ -3,6 +3,7 @@
 const char* StaticShader::_VERTEX_FILE = "vert.vxs";
 const char* StaticShader::_FRAGMENT_FILE = "frag.fs";
 
+const int StaticShader::_MAX_LIGHTS = 4;
 
 StaticShader::~StaticShader()
 {
@@ -22,11 +23,23 @@ void StaticShader::getAllUniformLocations()
 	_location_transformMatrix = ShaderProgram::getUniformLocation("transformMatrix");
 	_location_projectionMatrix = ShaderProgram::getUniformLocation("projectionMatrix");
 	_location_viewMatrix = ShaderProgram::getUniformLocation("viewMatrix");
-	_location_lightPosition = ShaderProgram::getUniformLocation("lightPosition");
-	_location_lightColor = ShaderProgram::getUniformLocation("lightColor");
 	_location_shineDamper = ShaderProgram::getUniformLocation("shineDamper");
 	_location_reflectivity = ShaderProgram::getUniformLocation("reflectivity");
 	_location_plane = ShaderProgram::getUniformLocation("plane");
+
+	//_location_lightPosition = new int[4];
+	//_location_lightColor =  int[4];
+
+	for (int i = 0; i < _MAX_LIGHTS; i++) {
+		if (i == 0) {
+			_location_lightPosition[i] = ShaderProgram::getUniformLocation("lightPosition");
+			_location_lightColor[i] = ShaderProgram::getUniformLocation("lightColor");
+		}
+		else {
+			_location_lightPosition[i] = _location_lightPosition[i - 1] + 1;
+			_location_lightColor[i] = _location_lightColor[i - 1] + 1;
+		}
+	}
 }
 
 void StaticShader::loadTransformMatrix(glm::mat4 &p_matrix)
@@ -45,10 +58,19 @@ void StaticShader::loadViewMatrix(Camera &p_camera)
 	ShaderProgram::loadMatrix(_location_viewMatrix, viewMatrix);
 }
 
-void StaticShader::loadLight(Light &p_light)
+void StaticShader::loadLights(std::vector<Light*> &p_light)
 {
-	ShaderProgram::loadVector(_location_lightPosition, p_light.getPostion());
-	ShaderProgram::loadVector(_location_lightColor, p_light.getColor());
+	glm::vec3 zero(0.0, 0.0, 0.0);
+	for (int i = 0; i < _MAX_LIGHTS; i++) {
+		if (i<p_light.size()) {
+			ShaderProgram::loadVector(_location_lightPosition[i], p_light[i]->getPostion());
+			ShaderProgram::loadVector(_location_lightColor[i], p_light[i]->getColor());
+		}
+		else {
+			//ShaderProgram::loadVector(_location_lightPosition[i],zero);
+			//ShaderProgram::loadVector(_location_lightColor[i], zero);
+		}
+	}
 }
 
 void StaticShader::loadShineVariables(float p_damper, float p_reflectivity)
