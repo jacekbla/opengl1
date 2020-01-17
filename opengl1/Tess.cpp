@@ -1,7 +1,7 @@
 #include "tess.h"
 
 const char* Tess::_DUDV_MAP = "res/dudv/dudv_water_map4.bmp";
-const float Tess::_WAVE_SPEED = 0.06f;
+const float Tess::_WAVE_SPEED = 0.03f;
 const float Tess::_HEIGHT = 0.02f;
 
 Tess::Tess(Loader p_loader, glm::mat4 p_projMatrix, WaterTile& p_quad, WaterFrameBuffers p_fbos)
@@ -82,7 +82,7 @@ void Tess::render(Camera& p_camera, Light &p_light, bool seeTessEdges)
 	disableShader();
 }
 
-void Tess::beforeRender(Camera & p_camera, Light & p_light)
+void Tess::beforeRender(Camera p_camera, Light p_light)
 {
 	glFuncs::ref().glBindVertexArray(_water.getVaoID());
 	glFuncs::ref().glEnableVertexAttribArray(0);
@@ -101,6 +101,10 @@ void Tess::beforeRender(Camera & p_camera, Light & p_light)
 	loadVec3(_location_lightColour, p_light.getColor());
 
 	glm::mat4 viewMatrix = Maths::createViewMatrix(p_camera);
+
+	glm::vec3 pos = p_camera.getPosition();
+	loadVec3(_location_cameraPosition, pos);
+
 	loadMatrix(_location_viewMatrix, viewMatrix);
 
 	glFuncs::ref().glActiveTexture(GL_TEXTURE0);

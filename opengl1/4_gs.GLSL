@@ -32,7 +32,7 @@ const float PI = 3.1415926535897932384626433832795;
 const float waveLength = 15.0;
 const float waveAmplitude = 0.3;
 
-const float specularReflectivity = 0.4;
+const float specularReflectivity = 0.4;//0.4;
 const float shineDamper = 20.0;
 const vec2 lightBias = vec2(0.5, 0.8);
 
@@ -97,30 +97,7 @@ void processVertex(int i)
 	vec2 vPosition = vec2(gl_in[i].gl_Position.x, gl_in[i].gl_Position.z);
 	vec4 vIndicators = indi[i];
 
-	if(i == 0)
-	{
-		vIndicators.x = gl_in[1].gl_Position.x - gl_in[i].gl_Position.x;
-		vIndicators.y = gl_in[1].gl_Position.z - gl_in[i].gl_Position.z;
-		vIndicators.z = gl_in[2].gl_Position.x - gl_in[i].gl_Position.x;
-		vIndicators.w = gl_in[2].gl_Position.z - gl_in[i].gl_Position.z;
-	}
-	if(i == 1)
-	{
-		vIndicators.x = gl_in[2].gl_Position.x - gl_in[i].gl_Position.x;
-		vIndicators.y = gl_in[2].gl_Position.z - gl_in[i].gl_Position.z;
-		vIndicators.z = gl_in[0].gl_Position.x - gl_in[i].gl_Position.x;
-		vIndicators.w = gl_in[0].gl_Position.z - gl_in[i].gl_Position.z;
-	}
-	if(i == 2)
-	{
-		vIndicators.x = gl_in[0].gl_Position.x - gl_in[i].gl_Position.x;
-		vIndicators.y = gl_in[0].gl_Position.z - gl_in[i].gl_Position.z;
-		vIndicators.z = gl_in[1].gl_Position.x - gl_in[i].gl_Position.x;
-		vIndicators.w = gl_in[1].gl_Position.z - gl_in[i].gl_Position.z;
-	}
-
 	vec3 currentVertex = vec3(vPosition.x * tiling, height, vPosition.y * tiling);
-
 	vec3 vertex1 = currentVertex + vec3(-1.0, 0.0, 1.0);
 	vec3 vertex2 = currentVertex + vec3(0.0, 0.0, 1.0);
 
@@ -129,8 +106,8 @@ void processVertex(int i)
 	vec3 vertex5 = currentVertex + vec3(0.0, 0.0, -1.0);
 	vec3 vertex6 = currentVertex + vec3(-1.0, 0.0, 0.0);
 
-	vec3 vertex1_surface = currentVertex + vec3(vIndicators.x, 0.0, vIndicators.y);
-	vec3 vertex2_surface = currentVertex + vec3(vIndicators.z, 0.0, vIndicators.w);
+	vec3 vertex1_surface = vertex1; //currentVertex + vec3(vIndicators.x, 0.0, vIndicators.y);
+	vec3 vertex2_surface = vertex2; //currentVertex + vec3(vIndicators.z, 0.0, vIndicators.w);
 
 	//vec3 vertex3 = currentVertex + vec3(-vIndicators.x, 0.0, 0.0);
 	//vec3 vertex4 = currentVertex + vec3(-vIndicators.x, 0.0, -vIndicators.y);

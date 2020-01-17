@@ -63,7 +63,7 @@ private:
 	int _location_lightPosition;
 	int _location_lightColour;
 
-	void beforeRender(Camera& p_camera, Light &p_light);
+	void beforeRender(Camera p_camera, Light p_light);
 	void afterRender();
 
 	void enableShader();

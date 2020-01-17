@@ -98,8 +98,8 @@ void main(void)
 	vec3 vertex5 = currentVertex + vec3(0.0, 0.0, -1.0);
 	vec3 vertex6 = currentVertex + vec3(-1.0, 0.0, 0.0);
 
-	vec3 vertex1_surface = currentVertex + vec3(vIndicators.x, 0.0, vIndicators.y);
-	vec3 vertex2_surface = currentVertex + vec3(vIndicators.z, 0.0, vIndicators.w);
+	vec3 vertex1_surface = vertex1; //currentVertex + vec3(vIndicators.x, 0.0, vIndicators.y);
+	vec3 vertex2_surface = vertex2; //currentVertex + vec3(vIndicators.z, 0.0, vIndicators.w);
 
 	//vec3 vertex3 = currentVertex + vec3(-vIndicators.x, 0.0, 0.0);
 	//vec3 vertex4 = currentVertex + vec3(-vIndicators.x, 0.0, -vIndicators.y);
@@ -132,4 +132,5 @@ void main(void)
 	toLightVector = normalize(lightPosition - worldPosition.xyz);
 	specular = calcSpecularLighting(toCameraVector, toLightVector, vertexNormal);
 	diffuse = calculateDiffuseLighting(toLightVector, vertexNormal);
+
 }
