@@ -49,6 +49,10 @@ RawModel* rawModel_elephant;
 TexturedModel* texturedModel_elephant;
 Entity* elephant;
 
+RawModel* rawModel_sun;
+TexturedModel* texturedModel_sun;
+Entity* sun;
+
 Renderer* renderer;
 StaticShader* shader;
 Camera* camera;
@@ -118,6 +122,7 @@ void display(void)
 
 	glm::vec3 center(0.0f, 0.0f, -8.0f);
 	light->setPostion(rotatePoint(light->getPostion(), center, angleDiff));
+	sun->setPosition(rotatePoint(light->getPostion(), center, angleDiff));
 	//elephant->setPosition(rotatePoint(light->getPostion(), center, angleDiff));
 	changeLight();
 
@@ -132,6 +137,7 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
+	masterRenderer->processEntity(*sun);
 	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight() + 0.5f));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
 	camera->invertPitch();
@@ -143,6 +149,7 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
+	masterRenderer->processEntity(*sun);
 	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight() + 0.5f));
 
 
@@ -153,6 +160,8 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
+	masterRenderer->processEntity(*elephant);
+	masterRenderer->processEntity(*sun);
 	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, 100.0f));
 	waterRenderer->render(*waterTile, *camera);
 
@@ -191,12 +200,19 @@ int main(int argc, char **argv)
 	texture2.setReflectivity(0.0f);
 	texturedModel_elephant = new TexturedModel(*rawModel_elephant, texture2);
 
+	rawModel_sun = &loadOBJ("res/sun.obj", loader);
+	ModelTexture texture3(loader.loadTexture("res/empty.bmp"));
+	texture3.setShineDamper(30.0f);
+	texture3.setReflectivity(0.4f);
+	texturedModel_sun = new TexturedModel(*rawModel_sun, texture3);
+
 	shader = new StaticShader();
 	terrain = new Entity(*texturedModel_terrain, glm::vec3(0.0f, -3.0f, -7.0f), 0.0f, 0.0f, 0.0f, 1.0f);
 	tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 40.0f, 0.0f, 1.0f);
 	tree2 = new Entity(*texturedModel_tree2, glm::vec3(1.4f, -1.9f, -13.0f), 0.0f, 150.0f, 0.0f, 1.3f);
 	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
-	light = new Light(glm::vec3(-10.0f, 10.0f, 5.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.9f, 0.9f, 0.9f));
+	light = new Light(glm::vec3(0.0f, 10.0f, -8.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.9f, 0.9f, 0.9f));
+	sun = new Entity(*texturedModel_sun, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 0.0f, 0.0f, 0.5f);
 	camera = new Camera(2.0f, 0.0f, 0.0f);
 	renderer = new Renderer(*shader);
 	
