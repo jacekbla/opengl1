@@ -58,6 +58,12 @@
     <Filter Include="Source Files\water">
       <UniqueIdentifier>{e4f30258-cbd5-40ef-ae6f-c74f7b7c8c41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\water_tess">
+      <UniqueIdentifier>{9fa86c0c-7bae-4ee5-98e1-319100831dc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\water_tess">
+      <UniqueIdentifier>{2fbfbd0f-4944-4d44-852e-9e2d9c066122}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DisplayManager.cpp">
@@ -126,6 +132,9 @@
     <ClCompile Include="WaterGenerator.cpp">
       <Filter>Source Files\water</Filter>
     </ClCompile>
+    <ClCompile Include="Tess.cpp">
+      <Filter>Source Files\water_tess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DisplayManager.h">
@@ -191,6 +200,9 @@
     <ClInclude Include="WaterGenerator.h">
       <Filter>Header Files\water</Filter>
     </ClInclude>
+    <ClInclude Include="Tess.h">
+      <Filter>Header Files\water_tess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="frag.fs">
@@ -204,6 +216,21 @@
     </None>
     <None Include="waterVert.vs">
       <Filter>Source Files\water</Filter>
+    </None>
+    <None Include="1_vs.GLSL">
+      <Filter>Source Files\water_tess</Filter>
+    </None>
+    <None Include="2_tc.GLSL">
+      <Filter>Source Files\water_tess</Filter>
+    </None>
+    <None Include="3_te.GLSL">
+      <Filter>Source Files\water_tess</Filter>
+    </None>
+    <None Include="4_gs.GLSL">
+      <Filter>Source Files\water_tess</Filter>
+    </None>
+    <None Include="5_fs.GLSL">
+      <Filter>Source Files\water_tess</Filter>
     </None>
   </ItemGroup>
 </Project>

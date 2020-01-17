@@ -15,6 +15,10 @@
 #include "WaterTile.h"
 #include "WaterFrameBuffers.h"
 #include "WaterGenerator.h"
+#include "Tess.h"
+
+bool useTesselation = false;
+bool onlyEdges = false;
 
 void keyboard(unsigned char p_key, int p_x, int p_y)
 {
@@ -26,13 +30,22 @@ void keyboard(unsigned char p_key, int p_x, int p_y)
 		exit(EXIT_SUCCESS);
 		break;
 	case '1':
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		onlyEdges = true;
 		break;
 	case '2':
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		onlyEdges = false;
+		break;
+
+	case 'j':
+		useTesselation = false;
+		break;
+	case 'k':
+		useTesselation = true;
 		break;
 	}
 }
+
+
 
 RawModel* rawModel_terrain;
 TexturedModel* texturedModel_terrain;
@@ -61,13 +74,15 @@ WaterRenderer* waterRenderer;
 WaterShader* waterShader;
 WaterFrameBuffers* fbos;
 
+Tess* tess;
+
 void display(void)
 {
-	//entity->increasePosition(0.0f, 0.0f, -0.002f);
-	//entity->increaseRotation(0.0f, 1.0f, 0.0f);
+
 	camera->move();
 
 	glEnable(GL_CLIP_DISTANCE0);
+
 
 	//render reflection texture to fbo
 	fbos->bindReflectionFrameBuffer();
@@ -83,6 +98,7 @@ void display(void)
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
 	camera->invertPitch();
 	fbos->unbindCurrentFrameBuffer();
+
 
 	//render refraction texture to fbo
 	fbos->bindRefractionFrameBuffer();
@@ -101,9 +117,29 @@ void display(void)
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->render(*light, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, -1.0f));
-	waterRenderer->render(*camera, *light);
+
+	// water rendering //
+
+	if (onlyEdges) // press [1]
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else // press [2]
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
+	if (useTesselation) // press [k] (krzysztof)
+	{
+		tess->render(*camera, *light, false);
+	}
+	else // press [j] (jacek)
+	{
+		waterRenderer->render(*camera, *light);
+	}
 
 	DisplayManager::updateDisplay();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 int main(int argc, char **argv)
@@ -156,6 +192,8 @@ int main(int argc, char **argv)
 	waterShader = new WaterShader();
 	waterRenderer = new WaterRenderer(*waterShader, renderer->getProjectionMatrix(), *fbos, *waterTile);
 
+	tess = new Tess(loader, renderer->getProjectionMatrix(), *waterTile, *fbos);
+
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
 
@@ -166,6 +204,9 @@ int main(int argc, char **argv)
 	waterShader->cleanUp();
 	masterRenderer->cleanUp();
 	loader.cleanUp();
+
+	tess->cleanUp();
+
 	delete camera;
 	delete light;
 	delete terrain;
@@ -183,6 +224,9 @@ int main(int argc, char **argv)
 	delete waterShader;
 	delete waterRenderer;
 	delete fbos;
+
+	delete tess;
+
 	DisplayManager::closeDisplay();
 
 	return 0;
