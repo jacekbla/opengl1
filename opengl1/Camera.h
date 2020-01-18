@@ -3,12 +3,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-
 class Camera
 {
 public:
-	explicit Camera() : Camera(0.0f, 0.0f, 0.0f) {};
-	explicit Camera(float p_pitch, float p_yaw, float p_roll) : _pitch(p_pitch), _yaw(p_yaw), _roll(p_roll) {};
+	explicit Camera()
+	{ };
 	~Camera();
 
 	glm::vec3 getPosition() const;
@@ -22,9 +21,13 @@ public:
 
 private:
 	glm::vec3 _position = glm::vec3(0.0f, 0.0f, 0.0f);
-	float _pitch = 0.0f;
+	float _pitch = 2.0f;
 	float _yaw = 0.0f;
 	float _roll = 0.0f;
+
+	const float _MOUSE_ANGLE_SENSITIVITY = 0.15f;
+	const float _KEYBOARD_ANGLE_SENSITIVITY = 0.4f;
+	const float _MOVE_SENSITIVITY = 0.1f;
 
 	int _currMouseX;
 	int _currMouseY;

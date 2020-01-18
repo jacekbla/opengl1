@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 	tree2 = new Entity(*texturedModel_tree2, glm::vec3(1.4f, -1.9f, -13.0f), 0.0f, 150.0f, 0.0f, 1.3f);
 	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
 	light = new Light(glm::vec3(-10.0f, 10.0f, 5.0f), glm::vec3(0.9f, 0.9f, 0.9f));
-	camera = new Camera(2.0f, 0.0f, 0.0f);
+	camera = new Camera();
 	renderer = new Renderer(*shader);
 	
 	masterRenderer = new MasterRenderer();

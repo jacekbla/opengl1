@@ -1,7 +1,6 @@
 #include "WaterGenerator.h"
 
 
-
 WaterGenerator::WaterGenerator()
 {
 }
