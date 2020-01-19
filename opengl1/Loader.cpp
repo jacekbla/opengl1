@@ -79,6 +79,16 @@ RawModel Loader::loadToVAO(std::vector<float> p_positions, int p_dimensions)
 	return RawModel(vaoID, p_positions.size() / p_dimensions);
 }
 
+RawModel Loader::loadWaterToVAO(std::vector<float> p_positions, std::vector<float> p_indicators)
+{
+	int vaoID = createVAO();
+	storeDataInAtrributeList(0, 2, p_positions);
+	storeDataInAtrributeList(1, 4, p_indicators);
+	unbindVAO();
+
+	return RawModel(vaoID, p_positions.size() / 2);
+}
+
 void Loader::cleanUp()
 {
 	glFuncs::ref().glDeleteVertexArrays(_vaos.size(), _vaos.data());
@@ -124,6 +134,17 @@ void Loader::storeDataInAtrributeList(int p_attributeNumber, int p_coordinateSiz
 	glFuncs::ref().glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glFuncs::ref().glBufferData(GL_ARRAY_BUFFER, p_data.size() * sizeof(float), p_data.data(), GL_STATIC_DRAW);
 	glFuncs::ref().glVertexAttribPointer(p_attributeNumber, p_coordinateSize, GL_FLOAT, GL_FALSE, 0, NULL);
+	glFuncs::ref().glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Loader::storeIntDataInAtrributeList(int p_attributeNumber, int p_coordinateSize, std::vector<int> p_data)
+{
+	GLuint vbo;
+	glFuncs::ref().glGenBuffers(1, &vbo);
+	_vbos.push_back(vbo);
+	glFuncs::ref().glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glFuncs::ref().glBufferData(GL_ARRAY_BUFFER, p_data.size() * sizeof(int), p_data.data(), GL_STATIC_DRAW);
+	glFuncs::ref().glVertexAttribPointer(p_attributeNumber, p_coordinateSize, GL_INT, GL_FALSE, 0, NULL);
 	glFuncs::ref().glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 

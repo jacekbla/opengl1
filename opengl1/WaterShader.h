@@ -24,7 +24,10 @@ public:
 	void loadProjectionMatrix(glm::mat4 &p_matrix);
 	void loadViewMatrix(Camera &p_camera);
 	void loadModelMatrix(glm::mat4 &p_matrix);
-	void loadMoveFactor(float p_factor);
+	void loadHeight(float p_height);
+	void loadWaveTime(float p_waveTime);
+	void loadLightPosition(glm::fvec3 p_lightPosition);
+	void loadLightColour(glm::fvec3 p_lightColour);
 
 private:
 	static const char* _VERTEX_FILE;
@@ -35,10 +38,12 @@ private:
 	int _location_projectionMatrix;
 	int _location_reflectionTexture;
 	int _location_refractionTexture;
-	int _location_dudvMap;
-	int _location_moveFactor;
 	int _location_cameraPosition;
 	int _location_depthMap;
+	int _location_height;
+	int _location_waveTime;
+	int _location_lightPosition;
+	int _location_lightColour;
 };
 
 

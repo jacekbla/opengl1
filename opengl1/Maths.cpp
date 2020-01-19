@@ -26,11 +26,11 @@ glm::mat4 Maths::createTransformMatrix(glm::vec3 p_translation, float p_rotX, fl
 glm::mat4 Maths::createViewMatrix(Camera p_camera)
 {
 	glm::mat4 viewMatrix(1.0f);
-	viewMatrix *= glm::rotate(viewMatrix, glm::radians(p_camera.getPitch()), glm::vec3(1.0f, 0.0f, 0.0f));
-	viewMatrix *= glm::rotate(viewMatrix, glm::radians(p_camera.getYaw()), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::vec3 cameraPos = p_camera.getPosition();
-	glm::vec3 negativeCameraPos(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-	viewMatrix *= glm::translate(viewMatrix, negativeCameraPos);
+	viewMatrix = glm::rotate(viewMatrix, glm::radians(p_camera.getPitch()), glm::vec3(1.0f, 0.0f, 0.0f));
+	viewMatrix = glm::rotate(viewMatrix, glm::radians(p_camera.getYaw()), glm::vec3(0.0f, 1.0f, 0.0f));
+	viewMatrix = glm::rotate(viewMatrix, glm::radians(p_camera.getRoll()), glm::vec3(0.0f, 0.0f, 1.0f));
+	viewMatrix = glm::translate(viewMatrix, -p_camera.getPosition());
+
 	return viewMatrix;
 }
 
@@ -42,4 +42,9 @@ glm::mat4 Maths::createMVP()
 	glm::mat4 Rt = glm::rotate(glm::mat4(1.0f), glm::radians(150.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	return Projection * Tr * Rt;
+}
+
+float Maths::toRadians(float p_angle)
+{
+	return (p_angle * 3.1415926535897932384626433832795) / 180.0f;
 }

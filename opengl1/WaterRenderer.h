@@ -6,6 +6,7 @@
 #include "Maths.h"
 #include "WaterFrameBuffers.h"
 #include "DisplayManager.h"
+#include "Light.h"
 
 #ifndef WATER_RENDERER_H
 #define WATER_RENDERER_H
@@ -14,24 +15,25 @@
 class WaterRenderer
 {
 public:
-	explicit WaterRenderer(Loader p_loader, WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos);
+	explicit WaterRenderer(WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos, WaterTile& p_quad);
 	~WaterRenderer();
 
-	void render(std::vector<WaterTile> p_water, Camera &p_camera);
+	void render(Camera &p_camera, Light &p_light);
 
 private:
-	static const char* _DUDV_MAP;
 	static const float _WAVE_SPEED;
+	static const float _HEIGHT;
 
-	RawModel _quad;
+	WaterTile _quad;
 	WaterShader _shader;
 	WaterFrameBuffers _fbos;
-	float _moveFactor = 0.0f;
-	int _dudvTexture;
+	float _waveTime = 0.0f;
 
-	void prepare(Camera &p_camera);
+	void prepare(Camera &p_camera, Light &p_light);
 	void unbind();
-	void setUpVAO(Loader p_loader);
+	void updateTime(); 
+	void loadLightVariables(Light p_light);
+	//void setUpVAO(Loader p_loader);
 };
 
 

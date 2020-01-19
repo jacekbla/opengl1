@@ -14,6 +14,7 @@
 #include "WaterRenderer.h"
 #include "WaterTile.h"
 #include "WaterFrameBuffers.h"
+#include "WaterGenerator.h"
 
 void keyboard(unsigned char p_key, int p_x, int p_y)
 {
@@ -60,7 +61,7 @@ Light* light;
 std::vector<Light*>* lights;
 MasterRenderer* masterRenderer;
 
-std::vector<WaterTile>* waterTile;
+WaterTile* waterTile;
 WaterRenderer* waterRenderer;
 WaterShader* waterShader;
 WaterFrameBuffers* fbos;
@@ -129,7 +130,7 @@ void display(void)
 	glEnable(GL_CLIP_DISTANCE0);
 
 	fbos->bindReflectionFrameBuffer();
-	float distance = 2 * (camera->getPosition().y - waterTile->at(0).getHeight());
+	float distance = 2 * (camera->getPosition().y - waterTile->getHeight());
 	float originalCameraY = camera->getPosition().y;
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY - distance, camera->getPosition().z));
 	camera->invertPitch();
@@ -138,7 +139,7 @@ void display(void)
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->processEntity(*sun);
-	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->at(0).getHeight() + 0.5f));
+	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->getHeight() + 0.5f));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
 	camera->invertPitch();
 	fbos->unbindCurrentFrameBuffer();
@@ -150,7 +151,8 @@ void display(void)
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->processEntity(*sun);
-	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->at(0).getHeight() + 0.5f));
+	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->getHeight() + 0.5f));
+
 
 
 	//render to screen
@@ -163,7 +165,8 @@ void display(void)
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->processEntity(*sun);
 	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, 100.0f));
-	waterRenderer->render(*waterTile, *camera);
+	waterRenderer->render(*camera, *light);
+
 
 	DisplayManager::updateDisplay();
 }
@@ -213,7 +216,8 @@ int main(int argc, char **argv)
 	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
 	light = new Light(glm::vec3(0.0f, 10.0f, -8.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.9f, 0.9f, 0.9f));
 	sun = new Entity(*texturedModel_sun, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 0.0f, 0.0f, 0.5f);
-	camera = new Camera(2.0f, 0.0f, 0.0f);
+	camera = new Camera();
+
 	renderer = new Renderer(*shader);
 	
 	lights = new std::vector<Light*>();
@@ -225,10 +229,11 @@ int main(int argc, char **argv)
 	masterRenderer = new MasterRenderer();
 
 	//water
+	waterTile = &WaterGenerator::generate(200, -5.0f, -2.5f, -12.0f, loader);
+
 	fbos = new WaterFrameBuffers();
 	waterShader = new WaterShader();
-	waterRenderer = new WaterRenderer(loader, *waterShader, renderer->getProjectionMatrix(), *fbos);
-	waterTile = new std::vector<WaterTile>({ WaterTile(0.0f, -7.0f, -2.5f)});
+	waterRenderer = new WaterRenderer(*waterShader, renderer->getProjectionMatrix(), *fbos, *waterTile);
 
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
