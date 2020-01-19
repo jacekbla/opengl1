@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 	texturedModel_elephant = new TexturedModel(*rawModel_elephant, texture2);
 
 	rawModel_sun = &loadOBJ("res/sun.obj", loader);
-	ModelTexture texture3(loader.loadTexture("res/empty.bmp"));
+	ModelTexture texture3(loader.loadTexture("res/white.bmp"));
 	texture3.setShineDamper(30.0f);
 	texture3.setReflectivity(0.4f);
 	texturedModel_sun = new TexturedModel(*rawModel_sun, texture3);
@@ -214,7 +214,7 @@ int main(int argc, char **argv)
 	tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 40.0f, 0.0f, 1.0f);
 	tree2 = new Entity(*texturedModel_tree2, glm::vec3(1.4f, -1.9f, -13.0f), 0.0f, 150.0f, 0.0f, 1.3f);
 	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
-	light = new Light(glm::vec3(0.0f, 10.0f, -8.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.9f, 0.9f, 0.9f));
+	light = new Light(glm::vec3(0.0f, 10.0f, -8.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.9f, 0.9f, 0.9f), 0.85f);
 	sun = new Entity(*texturedModel_sun, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 0.0f, 0.0f, 0.5f);
 	camera = new Camera();
 
@@ -223,7 +223,7 @@ int main(int argc, char **argv)
 	lights = new std::vector<Light*>();
 	lights->push_back(light);
 
-	Light* light2 = new Light(glm::vec3(0.0f, -1.0f, -11.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.0f, 0.0f, 0.0f));
+	Light* light2 = new Light(glm::vec3(0.0f, -1.0f, -11.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.0f, 0.0f, 0.0f), 0.05f);
 	lights->push_back(light2);
 
 	masterRenderer = new MasterRenderer();

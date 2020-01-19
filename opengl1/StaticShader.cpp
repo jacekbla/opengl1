@@ -34,10 +34,12 @@ void StaticShader::getAllUniformLocations()
 		if (i == 0) {
 			_location_lightPosition[i] = ShaderProgram::getUniformLocation("lightPosition");
 			_location_lightColor[i] = ShaderProgram::getUniformLocation("lightColor");
+			_location_lightStrenght[i] = ShaderProgram::getUniformLocation("lightStrenght");
 		}
 		else {
 			_location_lightPosition[i] = _location_lightPosition[i - 1] + 1;
 			_location_lightColor[i] = _location_lightColor[i - 1] + 1;
+			_location_lightStrenght[i] = _location_lightStrenght[i - 1] + 1;
 		}
 	}
 }
@@ -65,10 +67,7 @@ void StaticShader::loadLights(std::vector<Light*> &p_light)
 		if (i<p_light.size()) {
 			ShaderProgram::loadVector(_location_lightPosition[i], p_light[i]->getPostion());
 			ShaderProgram::loadVector(_location_lightColor[i], p_light[i]->getColor());
-		}
-		else {
-			//ShaderProgram::loadVector(_location_lightPosition[i],zero);
-			//ShaderProgram::loadVector(_location_lightColor[i], zero);
+			ShaderProgram::loadFloat(_location_lightStrenght[i], p_light[i]->getStrenght());
 		}
 	}
 }

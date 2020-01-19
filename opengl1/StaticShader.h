@@ -38,6 +38,7 @@ private:
 	int _location_viewMatrix;
 	int _location_lightPosition[4];
 	int _location_lightColor[4];
+	int _location_lightStrenght[4];
 	int _location_shineDamper;
 	int _location_reflectivity;
 	int _location_plane;
