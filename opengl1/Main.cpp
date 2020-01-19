@@ -16,6 +16,9 @@
 #include "WaterFrameBuffers.h"
 #include "WaterGenerator.h"
 
+void setAngle(float angleDeg);
+bool sunRotation=true;
+
 void keyboard(unsigned char p_key, int p_x, int p_y)
 {
 	switch (p_key)
@@ -31,7 +34,17 @@ void keyboard(unsigned char p_key, int p_x, int p_y)
 	case '2':
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		break;
+	case '+':
+		setAngle(90);
+		break;
+	case '-':
+		setAngle(-90);
+		break;
+	case '0':
+		sunRotation = !sunRotation;
+		break;
 	}
+
 }
 
 RawModel* rawModel_terrain;
@@ -69,6 +82,14 @@ WaterFrameBuffers* fbos;
 float sunAngle = 0;
 float angleDiff = 0.02f;
 const float PI = 3.141592653589793238462643383279502884197169f;
+float changedDiff=false;
+
+void setAngle(float angleDeg) {
+	sunAngle += angleDeg * (PI / 180.0);
+	angleDiff += angleDeg;
+	changedDiff = true;
+}
+
 
 glm::fvec3 rotatePoint(glm::fvec3 point, glm::fvec3  center, float angleDeg) {
 
@@ -85,33 +106,48 @@ glm::fvec3 rotatePoint(glm::fvec3 point, glm::fvec3  center, float angleDeg) {
 	return rotatedPoint;
 }
 
-void changeLight() {
+void changeLight(Light* sunLight,Entity* sunEntity, glm::vec3 center) 
+{
+
+	if (sunRotation || changedDiff) {
+
+		if(sunAngle > PI* 2)
+			sunAngle-= PI*2;
+
+		sunLight->setPostion(rotatePoint(sunLight->getPostion(), center, angleDiff));
+		sunEntity->setPosition(sunLight->getPostion());
+
+		if (changedDiff) {
+			angleDiff = 0.02f;
+			changedDiff = false;
+		}
+		else {
+			sunAngle += angleDiff * (PI / 180.0);
+		}
+		
+	}
+
 	glm::fvec3 lightRed(0.62, 0.38, 0);
 	glm::fvec3 lightBlue(0.45f, 0.65f, 0.95f);
 	glm::fvec3 lightBlack(1.0f, 1.0f, 1.0f);
 
-	float angle = angleDiff * (PI / 180.0);
-	sunAngle += angle;
-
-	if (sunAngle > 1.5707963268 && sunAngle < 4.7123889804) {
+	if (sunAngle > PI/2 && sunAngle < (3*PI)/2) {
 		lightBlue = glm::vec3(0.0f, 0.0f, 0.0f);
 		lightBlack = glm::vec3(0.2f, 0.2f, 0.2f);
 	}
+	float sin2 = pow(glm::sin(sunAngle), 2);
+	float cos2 = pow(glm::cos(sunAngle), 2);
 
 	
-	lightRed = glm::fvec3(lightRed.x * glm::sin(sunAngle)* glm::sin(sunAngle), lightRed.y * glm::sin(sunAngle)* glm::sin(sunAngle), lightRed.z * glm::sin(sunAngle)* glm::sin(sunAngle));
-	lightBlack = glm::fvec3(lightBlack.x * glm::cos(sunAngle)* glm::cos(sunAngle), lightBlack.y * glm::cos(sunAngle)* glm::cos(sunAngle), lightBlack.z * glm::cos(sunAngle)* glm::cos(sunAngle));
-	lightBlue = glm::fvec3(lightBlue.x * glm::cos(sunAngle) * glm::cos(sunAngle), lightBlue.y * glm::cos(sunAngle) * glm::cos(sunAngle), lightBlue.z * glm::cos(sunAngle) * glm::cos(sunAngle));
+	lightRed = glm::fvec3(lightRed.x * sin2, lightRed.y * sin2, lightRed.z * sin2);
+	lightBlack = glm::fvec3(lightBlack.x * cos2, lightBlack.y * cos2, lightBlack.z * cos2);
+	lightBlue = glm::fvec3(lightBlue.x * cos2, lightBlue.y * cos2, lightBlue.z * cos2);
 
 	glm::fvec3 lightColor = glm::fvec3(lightRed.x + lightBlack.x, lightRed.y + lightBlack.y, lightRed.z + lightBlack.z);
 	glm::fvec3 skyColor = glm::fvec3(lightRed.x + lightBlue.x, lightRed.y + lightBlue.y, lightRed.z + lightBlue.z);
 
-	if (sunAngle > 6.2831853072) {
-		sunAngle -= 6.2831853072;
-	}
-
-	light->setColor(lightColor);
-	light->setSkyColor(skyColor);
+	sunLight->setColor(lightColor);
+	sunLight->setSkyColor(skyColor);
 }
 
 
@@ -122,10 +158,8 @@ void display(void)
 	camera->move();
 
 	glm::vec3 center(0.0f, 0.0f, -8.0f);
-	light->setPostion(rotatePoint(light->getPostion(), center, angleDiff));
-	sun->setPosition(rotatePoint(light->getPostion(), center, angleDiff));
-	//elephant->setPosition(rotatePoint(light->getPostion(), center, angleDiff));
-	changeLight();
+	changeLight(light, sun, center);
+
 
 	glEnable(GL_CLIP_DISTANCE0);
 
@@ -165,7 +199,7 @@ void display(void)
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->processEntity(*sun);
 	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, 100.0f));
-	waterRenderer->render(*camera, *light);
+	waterRenderer->render(*camera, *lights);
 
 
 	DisplayManager::updateDisplay();
@@ -223,7 +257,7 @@ int main(int argc, char **argv)
 	lights = new std::vector<Light*>();
 	lights->push_back(light);
 
-	Light* light2 = new Light(glm::vec3(0.0f, -1.0f, -11.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.0f, 0.0f, 0.0f), 0.05f);
+	Light* light2 = new Light(glm::vec3(0.0f, 2.0f, -11.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.0f, 0.0f, 0.0f), 0.03f);
 	lights->push_back(light2);
 
 	masterRenderer = new MasterRenderer();

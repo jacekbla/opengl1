@@ -18,7 +18,7 @@ public:
 	explicit WaterRenderer(WaterShader p_shader, glm::mat4 p_projMatrix, WaterFrameBuffers p_fbos, WaterTile& p_quad);
 	~WaterRenderer();
 
-	void render(Camera &p_camera, Light &p_light);
+	void render(Camera &p_camera, std::vector<Light*> &p_lights);
 
 private:
 	static const float _WAVE_SPEED;
@@ -29,10 +29,10 @@ private:
 	WaterFrameBuffers _fbos;
 	float _waveTime = 0.0f;
 
-	void prepare(Camera &p_camera, Light &p_light);
+	void prepare(Camera &p_camera, std::vector<Light*> &p_lights);
 	void unbind();
 	void updateTime(); 
-	void loadLightVariables(Light p_light);
+	void loadLightVariables(std::vector<Light*> &p_lights);
 	//void setUpVAO(Loader p_loader);
 };
 

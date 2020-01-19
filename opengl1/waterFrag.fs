@@ -3,7 +3,7 @@
 in vec4 clipSpace;
 in vec4 clipSpaceGrid;
 in vec3 toCameraVector;
-in vec3 toLightVector;
+in vec3 toLightVector[4];
 in vec3 surfaceNormal;
 in vec3 vertexNormal;
 in vec3 specular;

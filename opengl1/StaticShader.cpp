@@ -62,7 +62,7 @@ void StaticShader::loadViewMatrix(Camera &p_camera)
 
 void StaticShader::loadLights(std::vector<Light*> &p_light)
 {
-	glm::vec3 zero(0.0, 0.0, 0.0);
+	//glm::vec3 zero(0.0, 0.0, 0.0);
 	for (int i = 0; i < _MAX_LIGHTS; i++) {
 		if (i<p_light.size()) {
 			ShaderProgram::loadVector(_location_lightPosition[i], p_light[i]->getPostion());
