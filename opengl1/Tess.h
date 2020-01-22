@@ -18,13 +18,15 @@ public:
 	Tess(Loader p_loader, glm::mat4 p_projMatrix, WaterTile& p_quad, WaterFrameBuffers p_fbos);
 	~Tess();
 
-	void render(Camera& p_camera, Light &p_light, bool seeTessEdges);
+	void render(Camera& p_camera, std::vector<Light*> &p_lights, bool seeTessEdges);
 	void cleanUp();
 
 private:
 	static const char* _DUDV_MAP;
 	static const float _WAVE_SPEED;
 	static const float _HEIGHT;
+
+	static const int _MAX_LIGHTS;
 
 	const char* _FILE_VS;
 	const char* _FILE_TC;
@@ -60,10 +62,14 @@ private:
 	int _location_height;
 	int _location_waveTime;
 
-	int _location_lightPosition;
-	int _location_lightColour;
+	int _location_lightPosition[4];
+	int _location_lightColor[4];
+	int _location_lightStrenght[4];
 
-	void beforeRender(Camera p_camera, Light p_light);
+	//int _location_lightPosition;
+	//int _location_lightColour;
+
+	void beforeRender(Camera p_camera, std::vector<Light*> p_lights);
 	void afterRender();
 
 	void enableShader();

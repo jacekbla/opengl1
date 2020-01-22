@@ -211,8 +211,13 @@ void display(void)
 	masterRenderer->processEntity(*tree);
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
+	masterRenderer->processEntity(*sun);
 
 	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, -1.0f));
+
+	//masterRenderer->processEntity(*elephant);
+	//masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, 100.0f));
+	//waterRenderer->render(*camera, *lights);
 
 	// water rendering //
 
@@ -227,17 +232,12 @@ void display(void)
 
 	if (useTesselation) // press [k] (krzysztof)
 	{
-		tess->render(*camera, *light, false);
+		tess->render(*camera, *lights, false);
 	}
 	else // press [j] (jacek)
 	{
 		waterRenderer->render(*camera, *lights);
 	}
-
-	masterRenderer->processEntity(*elephant);
-	masterRenderer->processEntity(*sun);
-	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, 100.0f));
-	waterRenderer->render(*camera, *lights);
 
 	DisplayManager::updateDisplay();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

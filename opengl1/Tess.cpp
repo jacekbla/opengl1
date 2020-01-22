@@ -3,6 +3,7 @@
 const char* Tess::_DUDV_MAP = "res/dudv/dudv_water_map4.bmp";
 const float Tess::_WAVE_SPEED = 0.03f;
 const float Tess::_HEIGHT = 0.02f;
+const int Tess::_MAX_LIGHTS = 4;
 
 Tess::Tess(Loader p_loader, glm::mat4 p_projMatrix, WaterTile& p_quad, WaterFrameBuffers p_fbos)
 {
@@ -14,9 +15,6 @@ Tess::Tess(Loader p_loader, glm::mat4 p_projMatrix, WaterTile& p_quad, WaterFram
 
 	_water = p_quad;
 	_fbos = p_fbos;
-
-	//_dudvTexture = p_loader.loadTexture(_DUDV_MAP);
-	//_moveFactor = 0.0f;
 
 	createProgram();
 
@@ -31,21 +29,32 @@ Tess::Tess(Loader p_loader, glm::mat4 p_projMatrix, WaterTile& p_quad, WaterFram
 
 	_location_reflectionTexture = glFuncs::ref().glGetUniformLocation(h_program, "reflectionTexture");
 	_location_refractionTexture = glFuncs::ref().glGetUniformLocation(h_program, "refractionTexture");
-	//_location_dudvMap = glFuncs::ref().glGetUniformLocation(h_program, "dudvMap");
 
-	//_location_moveFactor = glFuncs::ref().glGetUniformLocation(h_program, "moveFactor");
 	_location_cameraPosition = glFuncs::ref().glGetUniformLocation(h_program, "cameraPosition");
 	_location_depthMap = glFuncs::ref().glGetUniformLocation(h_program, "depthMap");
 	_location_height = glFuncs::ref().glGetUniformLocation(h_program, "height");
 	_location_waveTime = glFuncs::ref().glGetUniformLocation(h_program, "waveTime");
 
-	_location_lightPosition = glFuncs::ref().glGetUniformLocation(h_program, "lightPosition");
-	_location_lightColour = glFuncs::ref().glGetUniformLocation(h_program, "lightColour");
+	//_location_lightPosition = glFuncs::ref().glGetUniformLocation(h_program, "lightPosition");
+	//_location_lightColour = glFuncs::ref().glGetUniformLocation(h_program, "lightColour");
 
 	loadInt(_location_reflectionTexture, 0);
 	loadInt(_location_refractionTexture, 1);
-	//loadInt(_location_dudvMap, 2);
 	loadInt(_location_depthMap, 2);
+
+	for (int i = 0; i < _MAX_LIGHTS; i++) {
+		if (i == 0) {
+			_location_lightPosition[i] = glFuncs::ref().glGetUniformLocation(h_program,"lightPosition");
+			_location_lightColor[i] = glFuncs::ref().glGetUniformLocation(h_program,"lightColour");
+			_location_lightStrenght[i] = glFuncs::ref().glGetUniformLocation(h_program,"lightStrenght");
+		}
+		else {
+			_location_lightPosition[i] = _location_lightPosition[i - 1] + 1;
+			_location_lightColor[i] = _location_lightColor[i - 1] + 1;
+			_location_lightStrenght[i] = _location_lightStrenght[i - 1] + 1;
+		}
+	}
+
 
 	glm::mat4 modelMatrix = Maths::createTransformMatrix(glm::fvec3(_water.getX(), _water.getHeight(), _water.getZ()), 0.0f, 0.0f, 0.0f, WaterTile::TILE_SIZE);
 	loadMatrix(_location_modelMatrix, modelMatrix);
@@ -57,11 +66,11 @@ Tess::Tess(Loader p_loader, glm::mat4 p_projMatrix, WaterTile& p_quad, WaterFram
 
 Tess::~Tess() {}
 
-void Tess::render(Camera& p_camera, Light &p_light, bool seeTessEdges)
+void Tess::render(Camera& p_camera, std::vector<Light*> &p_lights, bool seeTessEdges)
 {
 	enableShader();
 
-	beforeRender(p_camera, p_light);
+	beforeRender(p_camera, p_lights);
 
 	if (seeTessEdges)
 	{
@@ -82,7 +91,7 @@ void Tess::render(Camera& p_camera, Light &p_light, bool seeTessEdges)
 	disableShader();
 }
 
-void Tess::beforeRender(Camera p_camera, Light p_light)
+void Tess::beforeRender(Camera p_camera, std::vector<Light*> p_lights)
 {
 	glFuncs::ref().glBindVertexArray(_water.getVaoID());
 	glFuncs::ref().glEnableVertexAttribArray(0);
@@ -97,8 +106,11 @@ void Tess::beforeRender(Camera p_camera, Light p_light)
 
 	loadFloat(_location_height, _HEIGHT);
 
-	loadVec3(_location_lightPosition, p_light.getPostion());
-	loadVec3(_location_lightColour, p_light.getColor());
+	for (int i = 0; i < p_lights.size(); i++) {
+		loadVec3(_location_lightPosition[i], p_lights[i]->getPostion());
+		loadVec3(_location_lightColor[i], p_lights[i]->getColor());
+		loadFloat(_location_lightStrenght[i], p_lights[i]->getStrenght());
+	}
 
 	glm::mat4 viewMatrix = Maths::createViewMatrix(p_camera);
 

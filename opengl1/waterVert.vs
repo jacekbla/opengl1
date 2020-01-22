@@ -134,9 +134,9 @@ void main(void)
 
 	toCameraVector = normalize(cameraPosition - worldPosition.xyz);
 
-	toLightVector = normalize(lightPosition - worldPosition.xyz);
-	specular = calcSpecularLighting(toCameraVector, toLightVector, vertexNormal);
-	diffuse = calculateDiffuseLighting(toLightVector, vertexNormal);
+	//toLightVector = normalize(lightPosition - worldPosition.xyz);
+	//specular = calcSpecularLighting(toCameraVector, toLightVector, vertexNormal);
+	//diffuse = calculateDiffuseLighting(toLightVector, vertexNormal);
 
 	for(int i=0; i<4; i++){
 		toLightVector[i] = normalize(lightPosition[i] - worldPosition.xyz);
