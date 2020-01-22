@@ -175,9 +175,11 @@
     <None Include="4_gs.GLSL" />
     <None Include="5_fs.GLSL" />
     <None Include="frag.fs" />
-    <None Include="vert.vs" />
     <None Include="waterFrag.fs" />
     <None Include="waterVert.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="vert.vxs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

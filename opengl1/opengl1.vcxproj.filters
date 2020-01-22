@@ -208,9 +208,6 @@
     <None Include="frag.fs">
       <Filter>Source Files\shaders</Filter>
     </None>
-    <None Include="vert.vs">
-      <Filter>Source Files\shaders</Filter>
-    </None>
     <None Include="waterFrag.fs">
       <Filter>Source Files\water</Filter>
     </None>
@@ -232,5 +229,10 @@
     <None Include="5_fs.GLSL">
       <Filter>Source Files\water_tess</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="vert.vxs">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
   </ItemGroup>
 </Project>

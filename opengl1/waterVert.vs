@@ -6,7 +6,7 @@ layout(location = 1) in vec4 vIndicators;
 out vec4 clipSpace;
 out vec4 clipSpaceGrid;
 out vec3 toCameraVector;
-out vec3 toLightVector;
+out vec3 toLightVector[4];
 out vec3 surfaceNormal;
 out vec3 vertexNormal;
 out vec3 specular;
@@ -18,8 +18,9 @@ uniform mat4 modelMatrix;
 uniform vec3 cameraPosition;
 uniform float height;
 uniform float waveTime;
-uniform vec3 lightPosition;
-uniform vec3 lightColour;
+uniform vec3 lightPosition[4];
+uniform vec3 lightColour[4];
+uniform float lightStrenght[4];
 
 const float tiling = 0.5;
 const float PI = 3.1415926535897932384626433832795;
@@ -72,19 +73,19 @@ vec3 calcVertexNormal(vec3 vertex0, vec3 vertex1, vec3 vertex2, vec3 vertex3, ve
 	return normalize(noramlVertex0);
 }
 
-vec3 calcSpecularLighting(vec3 toCamVector, vec3 toLightVector, vec3 normal)
+vec3 calcSpecularLighting(vec3 toCamVector, vec3 toLightVector, vec3 normal, vec3 colour)
 {
 	vec3 reflectedLightDirection = reflect(-toLightVector, normal);
 	float specularFactor = dot(reflectedLightDirection, toCamVector);
 	specularFactor = max(specularFactor,0.0);
 	specularFactor = pow(specularFactor, shineDamper);
-	return specularFactor * specularReflectivity * lightColour;
+	return specularFactor * specularReflectivity * colour;
 }
 
-vec3 calculateDiffuseLighting(vec3 toLightVector, vec3 normal)
+vec3 calculateDiffuseLighting(vec3 toLightVector, vec3 normal, vec3 colour)
 {
 	float brightness = max(dot(toLightVector, normal), 0.0);
-	return (lightColour * lightBias.x) + (brightness * lightColour * lightBias.y);
+	return (colour * lightBias.x) + (brightness * colour * lightBias.y);
 }
 
 void main(void) 
@@ -128,9 +129,20 @@ void main(void)
 	clipSpace = projectionMatrix * viewMatrix * worldPosition;
 	gl_Position = clipSpace;
 
+	specular=vec3(0.0,0.0,0.0);
+	diffuse=vec3(0.0,0.0,0.0);
+
 	toCameraVector = normalize(cameraPosition - worldPosition.xyz);
+
 	toLightVector = normalize(lightPosition - worldPosition.xyz);
 	specular = calcSpecularLighting(toCameraVector, toLightVector, vertexNormal);
 	diffuse = calculateDiffuseLighting(toLightVector, vertexNormal);
+
+	for(int i=0; i<4; i++){
+		toLightVector[i] = normalize(lightPosition[i] - worldPosition.xyz);
+		float attenuation = 0.25f/(pow ( distance(toLightVector[i],vec3(0.0,0.0,0.0)),2f)*(1-lightStrenght[i]));
+		specular = specular + calcSpecularLighting(toCameraVector, toLightVector[i], vertexNormal, lightColour[i])*attenuation; 
+		diffuse = diffuse + calculateDiffuseLighting(toLightVector[i], vertexNormal, lightColour[i])*attenuation;
+	}
 
 }

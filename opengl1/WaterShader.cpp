@@ -2,6 +2,7 @@
 
 const char* WaterShader::_VERTEX_FILE = "waterVert.vs";
 const char* WaterShader::_FRAGMENT_FILE = "waterFrag.fs";
+const int WaterShader::_MAX_LIGHTS = 4;
 
 WaterShader::~WaterShader()
 {
@@ -24,8 +25,19 @@ void WaterShader::getAllUniformLocations()
 	_location_depthMap = ShaderProgram::getUniformLocation("depthMap");
 	_location_height = ShaderProgram::getUniformLocation("height");
 	_location_waveTime = ShaderProgram::getUniformLocation("waveTime");
-	_location_lightPosition = ShaderProgram::getUniformLocation("lightPosition");
-	_location_lightColour = ShaderProgram::getUniformLocation("lightColour");
+
+	for (int i = 0; i < _MAX_LIGHTS; i++) {
+		if (i == 0) {
+			_location_lightPosition[i] = ShaderProgram::getUniformLocation("lightPosition");
+			_location_lightColor[i] = ShaderProgram::getUniformLocation("lightColour");
+			_location_lightStrenght[i] = ShaderProgram::getUniformLocation("lightStrenght");
+		}
+		else {
+			_location_lightPosition[i] = _location_lightPosition[i - 1] + 1;
+			_location_lightColor[i] = _location_lightColor[i - 1] + 1;
+			_location_lightStrenght[i] = _location_lightStrenght[i - 1] + 1;
+		}
+	}
 }
 
 void WaterShader::connectTextureUnits()
@@ -63,14 +75,46 @@ void WaterShader::loadWaveTime(float p_waveTime)
 	ShaderProgram::loadFloat(_location_waveTime, p_waveTime);
 }
 
-void WaterShader::loadLightPosition(glm::fvec3 p_lightPosition)
+void WaterShader::loadLightPositions(std::vector<Light*> &p_lights)
 {
-	ShaderProgram::loadVector(_location_lightPosition, p_lightPosition);
+	glm::vec3 zero(0.0, 0.0, 0.0);
+	for (int i = 0; i < _MAX_LIGHTS; i++) {
+		if (i < p_lights.size()) {
+			ShaderProgram::loadVector(_location_lightPosition[i], p_lights[i]->getPostion());
+
+		}
+		else {
+			ShaderProgram::loadVector(_location_lightPosition[i],zero);
+		}
+	}
 }
 
-void WaterShader::loadLightColour(glm::fvec3 p_lightColout)
+void WaterShader::loadLightColours(std::vector<Light*> &p_lights)
 {
-	ShaderProgram::loadVector(_location_lightColour, p_lightColout);
+	glm::vec3 zero(0.0, 0.0, 0.0);
+	for (int i = 0; i < _MAX_LIGHTS; i++) {
+		if (i < p_lights.size()) {
+			ShaderProgram::loadVector(_location_lightColor[i], p_lights[i]->getColor());
+
+		}
+		else {
+			ShaderProgram::loadVector(_location_lightColor[i],zero);
+		}
+	}
+}
+
+void WaterShader::loadLightStrenghts(std::vector<Light*>& p_lights)
+{
+
+	for (int i = 0; i < _MAX_LIGHTS; i++) {
+		if (i < p_lights.size()) {
+			ShaderProgram::loadFloat(_location_lightStrenght[i], p_lights[i]->getStrenght());
+
+		}
+		else {
+			ShaderProgram::loadFloat(_location_lightStrenght[i], 0.0);
+		}
+	}
 }
 
 

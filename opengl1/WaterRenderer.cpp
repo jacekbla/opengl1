@@ -19,9 +19,9 @@ WaterRenderer::~WaterRenderer()
 {
 }
 
-void WaterRenderer::render(Camera & p_camera, Light &p_light)
+void WaterRenderer::render(Camera & p_camera, std::vector<Light*> &p_lights)
 {
-	prepare(p_camera, p_light);
+	prepare(p_camera, p_lights);
 
 	glm::mat4 modelMatrix = Maths::createTransformMatrix(glm::fvec3(_quad.getX(), _quad.getHeight(), _quad.getZ()), 0.0f, 0.0f, 0.0f, WaterTile::TILE_SIZE);
 	_shader.loadModelMatrix(modelMatrix);
@@ -31,13 +31,13 @@ void WaterRenderer::render(Camera & p_camera, Light &p_light)
 	unbind();
 }
 
-void WaterRenderer::prepare(Camera & p_camera, Light &p_light)
+void WaterRenderer::prepare(Camera & p_camera, std::vector<Light*> &p_lights)
 {
 	_shader.start();
 	updateTime();
 	_shader.loadViewMatrix(p_camera);
 	_shader.loadHeight(_HEIGHT);
-	loadLightVariables(p_light);
+	loadLightVariables(p_lights);
 	glFuncs::ref().glBindVertexArray(_quad.getVaoID());
 	glFuncs::ref().glEnableVertexAttribArray(0);
 	glFuncs::ref().glEnableVertexAttribArray(1);
@@ -67,8 +67,10 @@ void WaterRenderer::updateTime()
 	_shader.loadWaveTime(_waveTime);
 }
 
-void WaterRenderer::loadLightVariables(Light p_light)
+void WaterRenderer::loadLightVariables(std::vector<Light*> &p_lights)
 {
-	_shader.loadLightPosition(p_light.getPostion());
-	_shader.loadLightColour(p_light.getColor());
+	_shader.loadLightPositions(p_lights);
+	_shader.loadLightColours(p_lights);
+	_shader.loadLightStrenghts(p_lights);
+
 }

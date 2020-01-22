@@ -3,7 +3,7 @@
 in vec4 clipSpace;
 in vec4 clipSpaceGrid;
 in vec3 toCameraVector;
-in vec3 toLightVector;
+in vec3 toLightVector[4];
 in vec3 surfaceNormal;
 in vec3 vertexNormal;
 in vec3 specular;
@@ -18,6 +18,17 @@ uniform sampler2D depthMap;
 const float waveStrength = 0.01;
 const float waterBlendDepth = 0.25;
 const float fresnelReflective = 0.6;
+const float murkyDepth = 14.0;
+const float minBlueness = 0.4;
+const float maxBlueness = 0.8;
+const vec4 waterColour = vec4(0.0, 0.3, 0.5, 1.0);
+
+vec4 applyMurkiness(vec4 refractColour, float waterDepth)
+{
+	float murkyFactor = clamp(waterDepth / murkyDepth, 0.0, 1.0);
+	float murkiness = minBlueness + murkyFactor * (maxBlueness - minBlueness);
+	return mix(refractColour, waterColour, murkiness);
+}
 
 float calculateFresnel()
 {
@@ -52,9 +63,10 @@ void main(void)
 
 	vec4 reflectColor = texture(reflectionTexture, reflectTexCoords);
 	vec4 refractColor = texture(refractionTexture, refractTexCoords);
+    refractColor = applyMurkiness(refractColor, waterDepth);
 
 	out_Color = mix(reflectColor, refractColor, calculateFresnel());
-	out_Color = mix(out_Color, vec4(0.0, 0.3, 0.5, 1.0), 0.2);
+	//out_Color = mix(out_Color, vec4(0.0, 0.3, 0.5, 1.0), 0.2);
     out_Color = out_Color * vec4(diffuse, 1.0) + vec4(specular, 0.0);
 	out_Color.a = clamp(waterDepth/waterBlendDepth, 0.0, 1.0);
 }
