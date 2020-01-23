@@ -78,6 +78,10 @@ RawModel* rawModel_sun;
 TexturedModel* texturedModel_sun;
 Entity* sun;
 
+RawModel* rawModel_lamp;
+TexturedModel* texturedModel_lamp;
+Entity* lamp;
+
 Renderer* renderer;
 StaticShader* shader;
 Camera* camera;
@@ -187,6 +191,7 @@ void display(void)
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->processEntity(*sun);
+	masterRenderer->processEntity(*lamp);
 	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, 1.0f, 0.0f, -waterTile->getHeight() + 0.5f));
 	camera->setPosition(glm::vec3(camera->getPosition().x, originalCameraY, camera->getPosition().z));
 	camera->invertPitch();
@@ -200,6 +205,7 @@ void display(void)
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->processEntity(*sun);
+	masterRenderer->processEntity(*lamp);
 	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, waterTile->getHeight() + 0.5f));
 
 
@@ -212,6 +218,7 @@ void display(void)
 	masterRenderer->processEntity(*tree2);
 	masterRenderer->processEntity(*elephant);
 	masterRenderer->processEntity(*sun);
+	masterRenderer->processEntity(*lamp);
 
 	masterRenderer->render(*lights, *camera, glm::fvec4(0.0f, -1.0f, 0.0f, -1.0f));
 
@@ -281,6 +288,12 @@ int main(int argc, char **argv)
 	texture3.setReflectivity(0.4f);
 	texturedModel_sun = new TexturedModel(*rawModel_sun, texture3);
 
+	rawModel_lamp = &loadOBJ("res/lamp.obj", loader);
+	//ModelTexture texture2(loader.loadTexture("res/empty.bmp"));
+	texture2.setShineDamper(30.0f);
+	texture2.setReflectivity(0.5f);
+	texturedModel_lamp = new TexturedModel(*rawModel_lamp, texture2);
+
 	shader = new StaticShader();
 	terrain = new Entity(*texturedModel_terrain, glm::vec3(0.0f, -3.0f, -7.0f), 0.0f, 0.0f, 0.0f, 1.0f);
 	tree = new Entity(*texturedModel_tree, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 40.0f, 0.0f, 1.0f);
@@ -288,6 +301,7 @@ int main(int argc, char **argv)
 	elephant = new Entity(*texturedModel_elephant, glm::vec3(0.0f, -1.0f, -11.0f), 5.0f, 225.0f, 0.0f, 0.3f);
 	light = new Light(glm::vec3(0.0f, 10.0f, -8.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.9f, 0.9f, 0.9f), 0.85f);
 	sun = new Entity(*texturedModel_sun, glm::vec3(-4.0f, -1.5f, -12.0f), 0.0f, 0.0f, 0.0f, 0.5f);
+	lamp = new Entity(*texturedModel_lamp, glm::vec3(-4.0f, -1.5f, -9.0f), 0.0f, 0.0f, 0.0f, 0.5f);
 	camera = new Camera();
 
 	renderer = new Renderer(*shader);
@@ -295,7 +309,7 @@ int main(int argc, char **argv)
 	lights = new std::vector<Light*>();
 	lights->push_back(light);
 
-	Light* light2 = new Light(glm::vec3(0.0f, 2.0f, -11.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.0f, 0.0f, 0.0f), 0.03f);
+	Light* light2 = new Light(glm::vec3(-4.0f, 1.6f, -9.0f), glm::vec3(0.9f, 0.9f, 0.9f), glm::vec3(0.0f, 0.0f, 0.0f), 0.03f);
 	lights->push_back(light2);
 
 	masterRenderer = new MasterRenderer();
